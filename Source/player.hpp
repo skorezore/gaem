@@ -3,7 +3,7 @@
 #define PLAYER_HPP
 
 
-#include <forward_list>
+#include <deque>
 #include "coords.hpp"
 
 
@@ -12,7 +12,7 @@ class player {
 
 public:
 	coords position{};
-	std::forward_list<coords> prev_positions;
+	std::deque<coords> prev_positions;
 	int health = 100;
 };
 
