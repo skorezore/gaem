@@ -1,3 +1,3 @@
 # Gaem
 
-Definitely the best gaem on earth, if it exists.
+Absolutely the best gaem on earth, if it exists.
