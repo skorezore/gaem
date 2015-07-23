@@ -33,17 +33,17 @@
 
 class game_screen {
 public:
-  static const char filler;
+	static const char filler;
 
-  coords size;
-  std::map<coords, char> map;
+	coords size;
+	std::map<coords, char> map;
 
-  game_screen(const coords & sz);
+	game_screen(const coords & sz);
 
-  void draw();
-  void reset();
+	void draw();
+	void reset();
 
-  reference_proxy<char> operator[](const coords & xy);
+	reference_proxy<char> operator[](const coords & xy);
 };
 
 
