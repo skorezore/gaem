@@ -76,7 +76,7 @@ void gravity(game_screen & screen, player & player) {
 }
 
 void loop() {
-  static const auto time_between_frames = 100ms;
+  static const auto time_between_frames = 75ms;
 
   game_screen screen({16, 16});
   screen.reset();
@@ -111,7 +111,12 @@ void loop() {
       break;
 
     if(player.position.y > 14) {
-      cout << "You fell to your death. Game over!" << endl;
+      cout << "You fell to your death. Game over! Press R to restart or any key to quit." << endl;
+
+      if (tolower(getch()) == 'r') {
+        loop();
+      }
+
       break;
     }
   }
