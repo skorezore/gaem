@@ -21,34 +21,27 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#include "coords.hpp"
-#include <ostream>
+#include "frame_buffer.hpp"
 
 
 using namespace std;
 
 
-coords coords::below(int factor) const {
-	return {x, y + factor};
-}
+ostringstream * frame_buffer;
 
-coords coords::above(int factor) const {
-	return {x, y - factor};
-}
 
-coords coords::left(int factor) const {
-	return {x - factor, y};
-}
+class frame_maker_t {
+	ostringstream strm;
 
-coords coords::right(int factor) const {
-	return {x + factor, y};
-}
+	frame_maker_t() {
+		frame_buffer = &strm;
+	}
 
-ostream & operator<<(ostream & strm, const coords & xy) {
-	strm << "{x=" << xy.x << ",y=" << xy.y << '}';
-	return strm;
-}
+	~frame_maker_t() {
+		frame_buffer = nullptr;
+	}
 
-bool operator<(const coords & lhs, const coords & rhs) {
-	return lhs.y < rhs.y || (lhs.y == rhs.y && lhs.x < rhs.x);
-}
+	static frame_maker_t instance;
+};
+
+frame_maker_t frame_maker_t::instance;

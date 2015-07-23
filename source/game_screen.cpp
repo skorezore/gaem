@@ -22,8 +22,7 @@
 
 
 #include "game_screen.hpp"
-#include <iostream>
-#include <sstream>
+#include "frame_buffer.hpp"
 
 
 using namespace std;
@@ -42,13 +41,11 @@ game_screen::game_screen(const coords & sz) : size(sz) {
 }
 
 void game_screen::draw() {
-	stringstream frame;
 	for(auto itr = map.begin(); itr != map.end(); ++itr) {
 		for(int i = 1; i < size.x; ++i)
-			frame << itr++->second;
-		frame << '\n';
+			*frame_buffer << itr++->second;
+		*frame_buffer << '\n';
 	}
-	cout << frame.str();
 }
 
 void game_screen::reset() {

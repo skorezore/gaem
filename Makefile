@@ -20,6 +20,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+ifeq "$(OS)" "Windows_NT"
+	CURSES_VARIANT := pd
+else
+	CURSES_VARIANT := n
+endif
+
+
 all:
 	@mkdir -p binaries 2>nul || :
-	$(CXX) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem -static -std=c++14 -Wall -Wextra -pedantic
+	$(CXX) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
