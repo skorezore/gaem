@@ -5,25 +5,25 @@ compiler:
   - gcc
   - clang
 
+before_install:
+- openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv
+  -in .dropbox_uploader.enc -out .dropbox_uploader -d
+
 install:
   - export COMPILER_NAME=$CC
   - if [ "$CXX" = "g++" ]; then export CXX=g++-5 CC=gcc-5; fi
   - if [ "$CXX" = "clang++" ]; then export CXX=clang++-3.7 CC=clang-3.7; fi
 
-#deploy:
-#  provider: releases
-#  api_key:
-#    secure: bPtQT10pEJamkOKrVJ3Y0aAxKX27UeYAmJo+mdyH2qBcwhOKoE6r/To+kvRFAq25Df7tVa7MDEMLv7eXjb2ouVhP9R3YbZ+opbEKd+zQ5CI+RidktpkZpwaOvMJuSDsbd6sABfv1Jlg3WuDVipzS47HGZDfo8PaQYWYRLvqRULpePFjmYhGsma29p8sw1ewmbp2qA+QsU6mQi3KhJci2lwFVrLiG9GEhSGOTyQ3yjBlYBCdtv0rLlHjjcgwwxlD9i6HjEbW6LAK+IiZHGP5AHUHfbumSEFsBJkdMqY/5HkxnM+sm09Kop4VDlVUEvUkW7GAbuCWXIhn5Rq1VWxupVBxrTzLJRqnbf/zV2CFqa0EifPC2H/c2D2ueeWbrKsg/B6KaOJRKHFCdqhtzq2QFxtXdWKbhvx+hAmdJKyIOmW5G5VfVJo1/sdKa78EfHhRKCWGKJ6ZpC7Hq+GlhKv4KPkQzwrHTvbeyfxjGPqF8mqYlhoEt3Mhxbn4pgagHM945eK7fOYPbDXaz9Z/vAOfLBy1mJYOok27noa3EU63VWjDue4hK/1Vf/fzOBsntSahBKDRN9GIfmysZsxYP2FEMTeqgkE57CrnYuTHjhcRe7kEdBvogzbdaPxOwiFry3mjuYTya65+G+YnkthC6G+EXO5SdNkN/qFYSefF7MLdK0qw=
-#  file: binaries/gaem_$COMPILER_NAME.out
-#  on:
-#    tags: true
-#    repo: nabijaczleweli/Gaem
+deploy:
+  provider: script
+  script: deploy.sh
 
 script:
   - make all
 
 after_success:
-  - cp binaries/gaem.out binaries/gaem_$COMPILER_NAME.out
+  - cp binaries/gaem binaries/gaem-$COMPILER_NAME-$TRAVIS_BUILD_NUMBER
+  - ls binaries
 
 addons:
   apt:
@@ -35,3 +35,4 @@ addons:
       - g++-5
       - clang-3.7
       - libncurses5-dev
+
