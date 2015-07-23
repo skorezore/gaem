@@ -20,7 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-
 #include "game_screen.hpp"
 #include "player.hpp"
 #include <iostream>
@@ -39,8 +38,8 @@ bool handle_player_movements(game_screen & screen, player & player) {
     char key      = tolower(getch());
     coords newpos = player.position;
 
-    if(key == 'w' && player.position.x > 2 && screen[player.position.below()] != game_screen::filler && screen[player.position.above()] == game_screen::filler &&
-       screen[player.position.above(2)] == game_screen::filler)
+    if(key == 'w' && player.position.x > 2 && screen[player.position.below()] != game_screen::filler &&
+       screen[player.position.above()] == game_screen::filler && screen[player.position.above(2)] == game_screen::filler)
       newpos.y -= 2;
 
     if(key == 'a' && player.position.x > 0)
@@ -52,8 +51,7 @@ bool handle_player_movements(game_screen & screen, player & player) {
     if(key == 'd' && player.position.x < screen.size.x)
       ++newpos.x;
 
-    player.prev_positions.emplace_front(move(player.position));
-    player.position = move(newpos);
+    player.moveTo(newpos);
 
     if(key == 'q')  // Sneaking in that close key
       return true;
@@ -62,10 +60,8 @@ bool handle_player_movements(game_screen & screen, player & player) {
 }
 
 void gravity(game_screen & screen, player & player) {
-  if(player.position.y < screen.size.y && screen[player.position.below()] == game_screen::filler) {
-    player.prev_positions.emplace_front(player.position);
-    ++player.position.y;
-  }
+  if(player.position.y < screen.size.y && screen[player.position.below()] == game_screen::filler)
+    player.moveTo(player.position.below());
 }
 
 void loop() {

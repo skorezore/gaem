@@ -21,23 +21,14 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
+#include "player.hpp"
+#include <utility>
 
 
-#include <deque>
-#include "coords.hpp"
+using namespace std;
 
 
-class player {
-public:
-	void moveTo(const coords & where);
-
-	coords position{};
-	std::deque<coords> prev_positions;
-	int health = 100;
-};
-
-
-#endif  // PLAYER_HPP
+void player::moveTo(const coords & where) {
+	prev_positions.emplace_front(move(position));
+	position = where;
+}
