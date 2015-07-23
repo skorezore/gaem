@@ -21,19 +21,19 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef CURSES_HPP
-#define CURSES_HPP
+#include "curses.hpp"
 
 
-#ifdef _WIN32
-#include <curses.h>
-#else
-#include <ncurses.h>
-#endif
+bool kbhit() {
+	bool result = false;
+	nodelay(stdscr, true);
 
+	int ch = getch();
+	if(ch != ERR) {
+		ungetch(ch);
+		result = true;
+	}
 
-bool kbhit();
-
-
-#endif  // CURSES_HPP
+	nodelay(stdscr, false);
+	return result;
+}

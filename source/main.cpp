@@ -56,7 +56,7 @@ void clear_screen() {
 }
 
 bool handle_player_movements(game_screen & screen, player & player) {
-	if(true /*kbhit()*/) {
+	if(kbhit()) {
 		char key      = tolower(getch());
 		coords newpos = player.position;
 
