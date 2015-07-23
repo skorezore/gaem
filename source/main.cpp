@@ -22,15 +22,20 @@
 
 #include "game_screen.hpp"
 #include "player.hpp"
+#include <experimental/string_view>
+#include <functional>
 #include <iostream>
+#include <conio.h>
+#include <sstream>
 #include <chrono>
 #include <vector>
+#include <string>
 #include <thread>
-#include <conio.h>
 
 
 using namespace std;
 using namespace std::chrono;
+using namespace std::experimental;
 
 
 bool handle_player_movements(game_screen & screen, player & player) {
@@ -42,14 +47,20 @@ bool handle_player_movements(game_screen & screen, player & player) {
        screen[player.position.above()] == game_screen::filler && screen[player.position.above(2)] == game_screen::filler)
       newpos.y -= 2;
 
-    if(key == 'a' && player.position.x > 0)
+    if(key == 'a' && player.position.x > 0) {
       --newpos.x;
+      if(screen[player.position.below()] == game_screen::filler)
+        --newpos.x;
+    }
 
     if(key == 's' && player.position.y < screen.size.y)
       ++newpos.y;
 
-    if(key == 'd' && player.position.x < screen.size.x)
+    if(key == 'd' && player.position.x < screen.size.x) {
       ++newpos.x;
+      if(screen[player.position.below()] == game_screen::filler)
+        ++newpos.x;
+    }
 
     player.move_to(newpos);
 
@@ -106,6 +117,24 @@ void loop() {
   }
 }
 
+function<void()> main_menu() {
+  static const vector<pair<string_view, function<void()>>> items({{"Play Gaem", loop}, {"Exit", [&]() {}}});
+
+  size_t idx = 1;
+  for(const auto & item : items)
+    cout << idx++ << ". " << item.first << '\n';
+  cout << "\nPress the key corresponding to your selection: ";
+
+  while(true) {
+    int key = getch();
+    size_t idx;
+    stringstream(string(1, static_cast<char>(key))) >> idx;
+
+    if(isdigit(key) && idx > 0 && items.size() >= idx)
+      return items[idx - 1].second;
+  }
+}
+
 int main() {
-  loop();
+  main_menu()();
 }
