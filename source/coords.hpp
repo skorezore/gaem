@@ -35,6 +35,8 @@ struct coords {
 
   coords below(int factor = 1) const;
   coords above(int factor = 1) const;
+  coords left(int factor = 1) const;
+  coords right(int factor = 1) const;
 };
 
 std::ostream & operator<<(std::ostream & strm, const coords & xy);

@@ -49,7 +49,7 @@ bool handle_player_movements(game_screen & screen, player & player) {
 
     if(key == 'a' && player.position.x > 0) {
       --newpos.x;
-      if(screen[player.position.below()] == game_screen::filler)
+      if(screen[player.position.below()] == game_screen::filler && screen[player.position.left()] == game_screen::filler && screen[player.position.left(2)] == game_screen::filler)
         --newpos.x;
     }
 
@@ -58,7 +58,7 @@ bool handle_player_movements(game_screen & screen, player & player) {
 
     if(key == 'd' && player.position.x < screen.size.x) {
       ++newpos.x;
-      if(screen[player.position.below()] == game_screen::filler)
+      if(screen[player.position.below()] == game_screen::filler && screen[player.position.right()] == game_screen::filler && screen[player.position.right(2)] == game_screen::filler)
         ++newpos.x;
     }
 
