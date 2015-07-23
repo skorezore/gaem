@@ -28,7 +28,7 @@
 using namespace std;
 
 
-void player::moveTo(const coords & where) {
+void player::move_to(const coords & where) {
 	prev_positions.emplace_front(move(position));
 	position = where;
 }

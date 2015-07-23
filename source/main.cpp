@@ -51,7 +51,7 @@ bool handle_player_movements(game_screen & screen, player & player) {
     if(key == 'd' && player.position.x < screen.size.x)
       ++newpos.x;
 
-    player.moveTo(newpos);
+    player.move_to(newpos);
 
     if(key == 'q')  // Sneaking in that close key
       return true;
@@ -61,7 +61,7 @@ bool handle_player_movements(game_screen & screen, player & player) {
 
 void gravity(game_screen & screen, player & player) {
   if(player.position.y < screen.size.y && screen[player.position.below()] == game_screen::filler)
-    player.moveTo(player.position.below());
+    player.move_to(player.position.below());
 }
 
 void loop() {

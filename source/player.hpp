@@ -32,7 +32,7 @@
 
 class player {
 public:
-	void moveTo(const coords & where);
+	void move_to(const coords & where);
 
 	coords position{};
 	std::deque<coords> prev_positions;
