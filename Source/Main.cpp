@@ -39,7 +39,7 @@ bool handle_player_movements(game_screen & screen, player & player) {
 }
 
 void gravity(game_screen & screen, player & player) {
-  if(player.position.y < screen.size.y && screen[player.position.above()] == game_screen::filler && screen[player.position.below()] == game_screen::filler) {
+  if(player.position.y < screen.size.y && screen[player.position.below()] == game_screen::filler) {
     player.prev_positions.emplace_front(player.position);
     ++player.position.y;
   }
