@@ -24,7 +24,7 @@
 #include "frame_buffer.hpp"
 #include "game_screen.hpp"
 #include "curses.hpp"
-#include "player.hpp"
+#include "entity.hpp"
 #include <experimental/string_view>
 #include <functional>
 #include <sstream>
@@ -55,7 +55,7 @@ void clear_screen() {
 	reset_buffer();
 }
 
-bool handle_player_movements(game_screen & screen, player & player) {
+bool handle_player_movements(game_screen & screen, entity & player) {
 	if(kbhit()) {
 		char key      = tolower(getch());
 		coords newpos = player.position;
@@ -87,9 +87,9 @@ bool handle_player_movements(game_screen & screen, player & player) {
 	return false;
 }
 
-void gravity(game_screen & screen, player & player) {
-	if(player.position.y < screen.size.y && screen[player.position.below()] == game_screen::filler)
-		player.move_to(player.position.below());
+void gravity(game_screen & screen, entity & entity) {
+	if(entity.position.y < screen.size.y && screen[entity.position.below()] == game_screen::filler)
+		entity.move_to(entity.position.below());
 }
 
 void loop() {
@@ -105,7 +105,7 @@ void loop() {
 	screen[{10, 14}] = '=';
 	screen[{11, 14}] = '=';
 	// Look at that fancy hardcoded screen ^
-	player player;
+	entity player;
 	bool do_gravity = false;
 
 	curs_set(0);
