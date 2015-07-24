@@ -105,7 +105,7 @@ void loop() {
 	screen[{10, 14}] = '=';
 	screen[{11, 14}] = '=';
 	// Look at that fancy hardcoded screen ^
-	entity player;
+	entity player('X');
 	bool do_gravity = false;
 
 	curs_set(0);
@@ -118,7 +118,7 @@ void loop() {
 		for(auto & pos : player.prev_positions)
 			screen[pos] = game_screen::filler;
 		player.prev_positions.clear();
-		screen[player.position] = 'X';
+		screen[player.position] = player.character;
 		screen.draw();
 		*frame_buffer << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                 "Use WASD for movement\n"

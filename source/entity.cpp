@@ -28,6 +28,10 @@
 using namespace std;
 
 
+entity::entity(char character) {
+    entity::character = character;
+}
+
 void entity::move_to(const coords & where) {
 	prev_positions.emplace_front(move(position));
 	position = where;
