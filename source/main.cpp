@@ -40,7 +40,7 @@ using namespace std::experimental;
 
 
 void draw_frame() {
-	printw(frame_buffer->str().c_str());
+	addstr(frame_buffer->str().c_str());
 	refresh();
 }
 
@@ -124,15 +124,21 @@ void loop() {
 		                 "Use WASD for movement\n"
 		                 "Press Q to quit\n\n"
 		                 "X: "
-		              << player.position.x << " Y: " << (-player.position.y + screen.size.y) << "\nWatch out for the spikes below!" << endl;
+		              << player.position.x << " Y: " << (-player.position.y + screen.size.y) << "\nWatch out for the spikes below!\n";
 		draw_frame();
 
 		if(handle_player_movements(screen, player))
 			break;
 
 		if(player.position.y > 14) {
-			*frame_buffer << "You fell to your death. Game over!" << endl;
+			curs_set(1);
+			frame_buffer->str("");
+			*frame_buffer << "You fell to your death. Game over!\nPress 'r' to restart: ";
 			draw_frame();
+			if(tolower(getch()) == 'r') {
+				clear();
+				loop();
+			}
 			break;
 		}
 	}
