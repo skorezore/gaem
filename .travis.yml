@@ -14,16 +14,12 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX=g++-5 CC=gcc-5; fi
   - if [ "$CXX" = "clang++" ]; then export CXX=clang++-3.7 CC=clang-3.7; fi
 
-deploy:
-  provider: script
-  script: deploy.sh
-
 script:
   - make all
 
 after_success:
-  - cp binaries/gaem binaries/gaem-$COMPILER_NAME-$TRAVIS_BUILD_NUMBER
-  - ls binaries
+  - cp binaries/gaem binaries/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME
+  - ./deploy.sh
 
 addons:
   apt:
