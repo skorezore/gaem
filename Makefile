@@ -27,7 +27,7 @@ else
 endif
 
 ifeq "$(TRAVIS)" "true"
-	CXXCIAR := -static-libstdc++ -static-libstdgcc
+	CXXCIAR := -static-libstdc++ -static-libgcc
 else
 	CXXCIAR :=
 endif
