@@ -6,8 +6,7 @@ compiler:
   - clang
 
 before_install:
-- openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv
-  -in .dropbox_uploader.enc -out .dropbox_uploader -d
+  - openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv -in .dropbox_uploader.enc -out .dropbox_uploader -d
 
 install:
   - export COMPILER_NAME=$CC
@@ -18,7 +17,6 @@ script:
   - make all
 
 after_success:
-  - cp binaries/gaem binaries/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME
   - ./deploy.sh
 
 addons:
