@@ -32,20 +32,22 @@
 
 class entity {
 public:
-    entity(char character);
-    entity(entity&&) = default;
-    virtual ~entity() = default;
-
-    entity(entity&) = default;
-    entity& operator=(entity&) = default;
-    entity& operator=(entity&&) = default;
-
-	void move_to(const coords & where);
-
 	coords position{};
 	std::deque<coords> prev_positions;
 	int health = 100;
-    char character;
+	char body;
+
+
+	entity(char thebody);
+	entity(const entity &) = default;
+	entity(entity &&) = default;
+
+	virtual ~entity() = default;
+
+	entity & operator=(const entity &) = default;
+	entity & operator=(entity &&) = default;
+
+	void move_to(const coords & where);
 };
 
 

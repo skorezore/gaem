@@ -118,7 +118,7 @@ void loop() {
 		for(auto & pos : player.prev_positions)
 			screen[pos] = game_screen::filler;
 		player.prev_positions.clear();
-		screen[player.position] = player.character;
+		screen[player.position] = player.body;
 		screen.draw();
 		*frame_buffer << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                 "Use WASD for movement\n"
