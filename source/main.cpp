@@ -133,12 +133,15 @@ void loop() {
 		if(player.position.y > 14) {
 			curs_set(1);
 			frame_buffer->str("");
-			*frame_buffer << "You fell to your death. Game over!\nPress 'r' to restart: ";
+			*frame_buffer << "You fell to your death. Game over!\nPress 'r' to restart (10s): ";
 			draw_frame();
+			halfdelay(100);
 			if(tolower(getch()) == 'r') {
 				clear();
+				nodelay(stdscr, true);
 				loop();
 			}
+			nodelay(stdscr, true);
 			break;
 		}
 	}
