@@ -26,8 +26,14 @@ else
 	CURSES_VARIANT := n
 endif
 
+ifeq "$(TRAVIS)" "true"
+	CXXCIAR := -static
+else
+	CXXCIAR :=
+endif
+
 
 all :
 	@mkdir -p binaries 2>nul || :
-	$(CXX) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
+	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
 	strip --strip-all --remove-section=.comment --remove-section=.note binaries/`ls binaries | grep gaem`
