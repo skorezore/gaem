@@ -21,14 +21,23 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#include "player.hpp"
-#include <utility>
+#pragma once
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
 
 
-using namespace std;
+#include <deque>
+#include "coords.hpp"
 
 
-void player::move_to(const coords & where) {
-	prev_positions.emplace_front(move(position));
-	position = where;
-}
+class entity {
+public:
+	void move_to(const coords & where);
+
+	coords position{};
+	std::deque<coords> prev_positions;
+	int health = 100;
+};
+
+
+#endif  // ENTITY_HPP
