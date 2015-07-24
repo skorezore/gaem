@@ -123,8 +123,7 @@ void loop() {
 		*frame_buffer << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                 "Use WASD for movement\n"
 		                 "Press Q to quit\n\n"
-		                 "X: "
-		              << player.position.x << " Y: " << (-player.position.y + screen.size.y) << "\nWatch out for the spikes below!\n";
+		                 "Watch out for the spikes below!\n";
 		draw_frame();
 
 		if(handle_player_movements(screen, player))
@@ -133,7 +132,7 @@ void loop() {
 		if(player.position.y > 14) {
 			curs_set(1);
 			frame_buffer->str("");
-			*frame_buffer << "You fell to your death. Game over!\nPress 'r' to restart (10s): ";
+			*frame_buffer << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
 			draw_frame();
 			halfdelay(100);
 			if(tolower(getch()) == 'r') {
