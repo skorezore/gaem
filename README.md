@@ -9,5 +9,7 @@ Recommended are [ncurses](http://bfy.tw/xfD) on Linux-based OSes and [PDcurses](
 
 ## Binaries
 
-For those who don't want to bother having to compile from source, we have Windows 64-bit [binaries](https://www.dropbox.com/s/rqftmlpp3ez3hig/Gaem.exe?dl=1) that you may download. Just be warned that they won't always be up to date.
 
+For those who don't want to bother having to compile from source, we have binaries that you may download for:
+ * [Windows x86_64](https://www.dropbox.com/s/rqftmlpp3ez3hig/Gaem.exe?dl=1). Beware: they aren't always up-to-date.
+ * [Ubuntu 12.04.5 LTS "precise" x86_64](https://www.dropbox.com/sh/3v8wry9vsocgcrc/AADseRZlthoGgK4ZXdvjgfvQa?dl=0). Always up-to-date!
