@@ -6,7 +6,7 @@ compiler:
   - clang
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv -in .dropbox_uploader.enc -out .dropbox_uploader -d
+  - if [ "TRAVIS_PULL_REQUEST" == "false" ]; then openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv -in .dropbox_uploader.enc -out .dropbox_uploader -d; fi
 
 install:
   - export COMPILER_NAME=$CC
@@ -17,7 +17,7 @@ script:
   - make all
 
 after_success:
-  - ./deploy.sh
+  - if [ "TRAVIS_PULL_REQUEST" == "false" ]; then./deploy.sh; fi
 
 addons:
   apt:
