@@ -22,22 +22,23 @@
 
 
 #pragma once
-#ifndef GAME_SCREEN_HPP
-#define GAME_SCREEN_HPP
+#ifndef GAEM_SCREEN_HPP
+#define GAEM_SCREEN_HPP
 
 
 #include "coords.hpp"
 #include <map>
+#include <string>
 
 
-class game_screen {
+class gaem_screen {
 public:
 	static const char filler;
 
 	coords size;
 	std::map<coords, char> map;
 
-	game_screen(const coords & sz);
+	gaem_screen(const coords & sz);
 
 	void draw();
 	void reset();
@@ -49,5 +50,6 @@ public:
 	void operator()(const coords & xy, char newval);
 };
 
+gaem_screen load_gaemsave(const std::string & path);
 
-#endif  // GAME_SCREEN_HPP
+#endif  // gaem_SCREEN_HPP

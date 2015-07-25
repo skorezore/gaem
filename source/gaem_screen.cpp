@@ -20,18 +20,20 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
+#include <fstream>
 
-#include "game_screen.hpp"
+#include "gaem_screen.hpp"
 #include "frame_buffer.hpp"
+#include "coords.hpp"
 
 
 using namespace std;
 
 
-const char game_screen::filler = ' ';
+const char gaem_screen::filler = ' ';
 
 
-game_screen::game_screen(const coords & sz) : size(sz) {
+gaem_screen::gaem_screen(const coords & sz) : size(sz) {
 	coords xy{};
 	for(; xy.x < size.x; ++xy.x) {
 		for(; xy.y < size.y; ++xy.y)
@@ -40,7 +42,7 @@ game_screen::game_screen(const coords & sz) : size(sz) {
 	}
 }
 
-void game_screen::draw() {
+void gaem_screen::draw() {
 	for(auto itr = map.begin(); itr != map.end(); ++itr) {
 		for(int i = 1; i < size.x; ++i)
 			frame_buffer() << itr++->second;
@@ -48,21 +50,21 @@ void game_screen::draw() {
 	}
 }
 
-void game_screen::reset() {
+void gaem_screen::reset() {
 	for(auto & pr : map)
 		pr.second = filler;
 }
 
-bool game_screen::is_valid(const coords & pos) const {
+bool gaem_screen::is_valid(const coords & pos) const {
 	return map.end() != map.find(pos);
 }
 
-bool game_screen::is_free(const coords & pos) const {
+bool gaem_screen::is_free(const coords & pos) const {
 	const auto itr = map.find(pos);
 	return itr == map.end() || itr->second == filler;
 }
 
-char game_screen::operator[](const coords & xy) {
+char gaem_screen::operator[](const coords & xy) {
 	auto match = map.find(xy);
 	if(map.end() == match)
 		return filler;
@@ -70,8 +72,23 @@ char game_screen::operator[](const coords & xy) {
 		return match->second;
 }
 
-void game_screen::operator()(const coords & xy, char newval) {
+void gaem_screen::operator()(const coords & xy, char newval) {
 	const auto itr = map.find(xy);
 	if(map.end() != itr)
 		itr->second = newval;
+}
+
+gaem_screen load_gaemsaev(const string & path) {
+	ifstream file(path);
+
+	coords temp;
+	char content;
+	file >> temp;
+
+	gaem_screen screen(temp);
+
+	while (file >> temp >> content)
+		screen(temp, content);
+
+	return screen;
 }
