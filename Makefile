@@ -37,7 +37,13 @@ else
 endif
 
 
+.PHONY : all clean
+
+
 all :
 	@mkdir -p binaries 2>$(DEVNULL) || :
 	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
 	strip --strip-all --remove-section=.comment --remove-section=.note binaries/gaem$(EXE)
+
+clean :
+	rm -rf binaries
