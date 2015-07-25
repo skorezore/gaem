@@ -22,40 +22,25 @@
 
 
 #pragma once
+#ifndef COORDS_HPP
+#define COORDS_HPP
 
-#include <ostream>
+
+#include <iosfwd>
+
 
 struct coords {
 	int x;
 	int y;
 
-    constexpr coords below(int factor) const { return { x, y + factor }; } 
-    constexpr coords above(int factor) const { return { x, y - factor }; } 
-    constexpr coords left (int factor) const { return { x - factor, y }; } 
-    constexpr coords right(int factor) const { return { x + factor, y }; } 
-
+	coords below(int factor = 1) const;
+	coords above(int factor = 1) const;
+	coords left(int factor = 1) const;
+	coords right(int factor = 1) const;
 };
 
-inline std::ostream & operator<<(std::ostream & strm, const coords & xy) {
-    return strm << "{x=" << xy.x << ",y=" << xy.y << '}';
-}
+std::ostream & operator<<(std::ostream & strm, const coords & xy);
+bool operator<(const coords & lhs, const coords & rhs);
 
-inline bool operator<(const coords & lhs, const coords & rhs) {
-    return lhs.y < rhs.y || (lhs.y == rhs.y && lhs.x < rhs.x);
-}
 
-inline bool operator==(const coords & lhs, const coords & rhs) {
-    return lhs.y == rhs.y && lhs.x == rhs.x;
-}
-
-inline bool operator!=(const coords & lhs, const coords & rhs) {
-    return lhs.y != rhs.y || lhs.x != rhs.x;
-}
-
-inline coords operator+(coords const& p, coords const& delta) {
-    return { p.x + delta.x, p.y + delta.y };
-}
-
-inline coords operator-(coords const& p, coords const& delta) {
-    return { p.x - delta.x, p.y - delta.y };
-}
+#endif  // COORDS_HPP

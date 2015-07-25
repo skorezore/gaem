@@ -22,9 +22,14 @@
 
 
 #pragma once
+#ifndef FRAME_BUFFER_HPP
+#define FRAME_BUFFER_HPP
+
 
 #include <sstream>
 
 
-extern std::ostream& frame_buffer();
+extern std::ostringstream * frame_buffer;
 
+
+#endif  // FRAME_BUFFER_HPP
