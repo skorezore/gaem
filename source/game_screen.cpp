@@ -43,8 +43,8 @@ game_screen::game_screen(const coords & sz) : size(sz) {
 void game_screen::draw() {
 	for(auto itr = map.begin(); itr != map.end(); ++itr) {
 		for(int i = 1; i < size.x; ++i)
-			*frame_buffer << itr++->second;
-		*frame_buffer << '\n';
+			frame_buffer() << itr++->second;
+		frame_buffer() << '\n';
 	}
 }
 
@@ -54,9 +54,13 @@ void game_screen::reset() {
 }
 
 reference_proxy<char> game_screen::operator[](const coords & xy) {
-	try {
-		return map.at(xy);
-	} catch(...) {
-		return filler;
-	}
+    auto match = map.find(xy);
+    if (map.end() == match)
+        return filler;
+    else
+        return match->second;
+}
+
+bool game_screen::is_valid(coords pos) const {
+    return map.end() != map.find(pos);
 }
