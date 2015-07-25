@@ -33,6 +33,7 @@
 #include <string>
 #include <thread>
 #include <cassert>
+#include <cmath>
 
 
 using namespace std;
@@ -64,6 +65,7 @@ namespace {
             case 's': case 'S': return { pos.x, pos.y += 1 };
             case 'd': case 'D': return { pos.x += 1, pos.y };
         }
+        return pos;
     }
 
     bool is_free(game_screen& screen, coords pos) {
@@ -79,15 +81,17 @@ namespace {
 
         assert(is_horizontal || is_vertical);
 
-        auto step = [](int v) { return v/abs(v); };
+        auto step = [](int v) -> int { return std::copysign(v/v,v); };
 
-        coords const delta = is_horizontal
+        coords const delta = is_vertical
             ? coords { 0, step(to.y - from.y) } 
             : coords { step(to.x - from.x), 0 };
 
         vector<coords> path { from };
         while (path.back() != to)
             path.push_back(path.back() + delta);
+
+        return path;
     }
 }
 
