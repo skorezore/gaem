@@ -17,7 +17,7 @@ script:
   - make all
 
 after_success:
-  - if [ "TRAVIS_PULL_REQUEST" == "false" ]; then./deploy.sh; fi
+  - if [ "TRAVIS_PULL_REQUEST" == "false" ]; then ./deploy.sh; fi
 
 addons:
   apt:
