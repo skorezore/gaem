@@ -34,3 +34,7 @@ void entity::move_to(const coords & where) {
 	prev_positions.emplace_front(move(position));
 	position = where;
 }
+
+bool entity::is_player() const {
+	return false;
+}

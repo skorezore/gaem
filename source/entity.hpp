@@ -26,6 +26,7 @@
 
 #include <deque>
 #include "coords.hpp"
+#include "game_screen.hpp"
 
 
 class entity {
@@ -46,4 +47,7 @@ public:
 	entity & operator=(entity &&) = default;
 
 	void move_to(const coords & where);
+
+	virtual bool is_player() const;
+	virtual coords movement_destination(const game_screen & screen, int key) = 0;
 };

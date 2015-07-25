@@ -22,8 +22,12 @@
 
 ifeq "$(OS)" "Windows_NT"
 	CURSES_VARIANT := pd
+	DEVNULL := nul
+	EXE := .exe
 else
 	CURSES_VARIANT := n
+	DEVNULL := /dev/null
+	EXE :=
 endif
 
 ifeq "$(TRAVIS)" "true"
@@ -33,7 +37,13 @@ else
 endif
 
 
+.PHONY : all clean
+
+
 all :
-	@mkdir -p binaries 2>nul || :
-	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
-	strip --strip-all --remove-section=.comment --remove-section=.note binaries/`ls binaries | grep gaem`
+	@mkdir -p binaries 2>$(DEVNULL) || :
+	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
+	strip --strip-all --remove-section=.comment --remove-section=.note binaries/gaem$(EXE)
+
+clean :
+	rm -rf binaries

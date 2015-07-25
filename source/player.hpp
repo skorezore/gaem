@@ -23,46 +23,16 @@
 
 #pragma once
 
-#include <ostream>
 
-struct coords {
-	int x;
-	int y;
+#include "entity.hpp"
 
-	constexpr coords below(int delta = 1) const {
-		return {x, y + delta};
-	}
-	constexpr coords above(int delta = 1) const {
-		return {x, y - delta};
-	}
-	constexpr coords left(int delta = 1) const {
-		return {x - delta, y};
-	}
-	constexpr coords right(int delta = 1) const {
-		return {x + delta, y};
-	}
+
+class player : public entity {
+public:
+	using entity::entity;
+
+	virtual ~player() = default;
+
+	virtual coords movement_destination(const game_screen & screen, int key) override;
+	virtual bool is_player() const override;
 };
-
-inline std::ostream & operator<<(std::ostream & strm, const coords & xy) {
-	return strm << "{x=" << xy.x << ",y=" << xy.y << '}';
-}
-
-inline bool operator<(const coords & lhs, const coords & rhs) {
-	return lhs.y < rhs.y || (lhs.y == rhs.y && lhs.x < rhs.x);
-}
-
-inline bool operator==(const coords & lhs, const coords & rhs) {
-	return lhs.y == rhs.y && lhs.x == rhs.x;
-}
-
-inline bool operator!=(const coords & lhs, const coords & rhs) {
-	return lhs.y != rhs.y || lhs.x != rhs.x;
-}
-
-inline coords operator+(coords const & p, coords const & delta) {
-	return {p.x + delta.x, p.y + delta.y};
-}
-
-inline coords operator-(coords const & p, coords const & delta) {
-	return {p.x - delta.x, p.y - delta.y};
-}
