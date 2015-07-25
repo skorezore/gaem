@@ -69,7 +69,7 @@ reference_proxy<T>::reference_proxy(const T & ref) noexcept : reference_proxy(co
 
 template <class T>
 reference_proxy<T> & reference_proxy<T>::operator=(const T & val) noexcept(noexcept(mem = val)) {
-	if(share) // WUT - so we silently swallow assignments... :( BAD ideas 
+	if(share)
 		mem = val;
 	return *this;
 }

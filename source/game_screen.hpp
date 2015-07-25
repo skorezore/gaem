@@ -43,8 +43,6 @@ public:
 	void draw();
 	void reset();
 
-    bool is_valid(coords pos) const;
-
 	reference_proxy<char> operator[](const coords & xy);
 };
 
