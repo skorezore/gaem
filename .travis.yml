@@ -3,7 +3,7 @@ language: cpp
 
 compiler:
   - gcc
-  - clang
+#  - clang
 
 before_install:
   - if [ "TRAVIS_PULL_REQUEST" == "false" ]; then openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv -in .dropbox_uploader.enc -out .dropbox_uploader -d; fi
@@ -22,11 +22,11 @@ after_success:
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
       - r-packages-precise
       - llvm-toolchain-precise
+      - ubuntu-toolchain-r-test
     packages:
       - g++-5
+#      - clang-3.7
       - libncurses5-dev
-      - clang-3.7
 
