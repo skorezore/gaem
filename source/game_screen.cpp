@@ -53,7 +53,16 @@ void game_screen::reset() {
 		pr.second = filler;
 }
 
-reference_proxy<char> game_screen::operator[](const coords & xy) {
+bool game_screen::is_valid(const coords & pos) const {
+	return map.end() != map.find(pos);
+}
+
+bool game_screen::is_free(const coords & pos) const {
+	const auto itr = map.find(pos);
+	return itr == map.end() || itr->second == filler;
+}
+
+char game_screen::operator[](const coords & xy) {
 	auto match = map.find(xy);
 	if(map.end() == match)
 		return filler;
@@ -61,6 +70,8 @@ reference_proxy<char> game_screen::operator[](const coords & xy) {
 		return match->second;
 }
 
-bool game_screen::is_valid(coords pos) const {
-	return map.end() != map.find(pos);
+void game_screen::operator()(const coords & xy, char newval) {
+	const auto itr = map.find(xy);
+	if(map.end() != itr)
+		itr->second = newval;
 }

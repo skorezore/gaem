@@ -76,12 +76,8 @@ namespace {
 		return pos;
 	}
 
-	bool is_free(game_screen & screen, coords pos) {
-		return screen[pos] == game_screen::filler;
-	}
-
 	/* Always returns a vector with at least 1 element (the starting position) */
-	vector<coords> get_path(coords const & from, coords const & to) {
+	vector<coords> get_path(const coords & from, const coords & to) {
 		bool const is_horizontal = from.y == to.y;
 		bool const is_vertical   = from.x == to.x;
 
@@ -113,7 +109,7 @@ bool keyboard_event_loop(game_screen & screen, entity & player) {
 		auto path = get_path(player.position, destination);
 
 		for(auto step = next(begin(path)); step != end(path); ++step) {
-			if(screen.is_valid(*step) && is_free(screen, *step))
+			if(screen.is_valid(*step) && screen.is_free(*step))
 				player.move_to(*step);
 			else
 				break;
@@ -131,14 +127,13 @@ void loop() {
 	static const auto time_between_frames = 75ms;
 
 	game_screen screen({16, 16});
-	screen.reset();
-	screen[{4, 13}]  = '=';
-	screen[{5, 13}]  = '=';
-	screen[{6, 13}]  = '=';
-	screen[{7, 13}]  = '=';
-	screen[{8, 13}]  = '=';
-	screen[{10, 14}] = '=';
-	screen[{11, 14}] = '=';
+	screen({4, 13}, '=');
+	screen({5, 13}, '=');
+	screen({6, 13}, '=');
+	screen({7, 13}, '=');
+	screen({8, 13}, '=');
+	screen({10, 14}, '=');
+	screen({11, 14}, '=');
 	// Look at that fancy hardcoded screen ^
 	entity player('X');
 	bool do_gravity = false;
@@ -151,9 +146,9 @@ void loop() {
 		this_thread::sleep_for(time_between_frames);
 		reset_buffer();
 		for(auto & pos : player.prev_positions)
-			screen[pos] = game_screen::filler;
+			screen(pos, game_screen::filler);
 		player.prev_positions.clear();
-		screen[player.position] = player.body;
+		screen(player.position, player.body);
 		screen.draw();
 		frame_buffer() << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                  "Use WASD for movement\n"
@@ -187,9 +182,9 @@ function<void()> main_menu() {
 	static const vector<pair<string_view, function<void()>>> items({{"Play Gaem", loop}, {"Exit", [&]() {}}});
 
 	size_t idx = 1;
+	frame_buffer() << "Make your selection:\n\n";
 	for(const auto & item : items)
-		frame_buffer() << idx++ << ". " << item.first << '\n';
-	frame_buffer() << "\nPress the key corresponding to your selection: ";
+		frame_buffer() << '\t' << idx++ << ". " << item.first << '\n';
 	draw_frame();
 
 	while(true) {

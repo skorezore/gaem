@@ -27,7 +27,6 @@
 
 
 #include "coords.hpp"
-#include "reference_proxy.hpp"
 #include <map>
 
 
@@ -43,9 +42,11 @@ public:
 	void draw();
 	void reset();
 
-	bool is_valid(coords pos) const;
+	bool is_valid(const coords & pos) const;
+	bool is_free(const coords & pos) const;
 
-	reference_proxy<char> operator[](const coords & xy);
+	char operator[](const coords & xy);
+	void operator()(const coords & xy, char newval);
 };
 
 
