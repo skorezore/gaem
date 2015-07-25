@@ -56,7 +56,11 @@ void game_screen::reset() {
 reference_proxy<char> game_screen::operator[](const coords & xy) {
     auto match = map.find(xy);
     if (map.end() == match)
-		return filler;
+        return filler;
     else
         return match->second;
+}
+
+bool game_screen::is_valid(coords pos) const {
+    return map.end() != map.find(pos);
 }
