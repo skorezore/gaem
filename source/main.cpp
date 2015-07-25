@@ -89,7 +89,7 @@ namespace {
 
 		auto step = [](int v) -> int { return std::copysign(v / v, v); };
 
-		coords const delta = is_vertical ? coords(0, step(to.y - from.y)) : coords(step(to.x - from.x), 0);
+		coords const delta = is_vertical ? coords{0, step(to.y - from.y)} : coords{step(to.x - from.x), 0};
 
 		vector<coords> path({from});
 		while(path.back() != to)

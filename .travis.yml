@@ -23,7 +23,7 @@ addons:
   apt:
     sources:
       - r-packages-precise
-      - llvm-toolchain-precise
+#      - llvm-toolchain-precise
       - ubuntu-toolchain-r-test
     packages:
       - g++-5
