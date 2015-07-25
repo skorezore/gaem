@@ -27,8 +27,7 @@
 using namespace std;
 
 
-std::ostringstream& frame_buffer() {
+std::ostringstream & frame_buffer() {
 	static ostringstream strm;
-    return strm;
+	return strm;
 }
-

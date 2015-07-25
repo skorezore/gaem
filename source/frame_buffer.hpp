@@ -23,8 +23,8 @@
 
 #pragma once
 
+
 #include <sstream>
 
 
-extern std::ostringstream& frame_buffer();
-
+extern std::ostringstream & frame_buffer();

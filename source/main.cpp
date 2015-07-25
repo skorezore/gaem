@@ -58,65 +58,68 @@ void clear_screen() {
 }
 
 namespace {
-    coords key_movement(coords pos, char key) {
-        switch(key) {
-            case 'w': case 'W': return { pos.x, pos.y -= 2 };
-            case 'a': case 'A': return { pos.x -= 1, pos.y };
-            case 's': case 'S': return { pos.x, pos.y += 1 };
-            case 'd': case 'D': return { pos.x += 1, pos.y };
-        }
-        return pos;
-    }
+	coords key_movement(coords pos, char key) {
+		switch(key) {
+			case 'w':
+			case 'W':
+				return {pos.x, pos.y -= 2};
+			case 'a':
+			case 'A':
+				return {pos.x -= 1, pos.y};
+			case 's':
+			case 'S':
+				return {pos.x, pos.y += 1};
+			case 'd':
+			case 'D':
+				return {pos.x += 1, pos.y};
+		}
+		return pos;
+	}
 
-    bool is_free(game_screen& screen, coords pos) {
-        return screen[pos] == game_screen::filler;
-    }
+	bool is_free(game_screen & screen, coords pos) {
+		return screen[pos] == game_screen::filler;
+	}
 
-    /*
-     * Always returns a vector with at least 1 element (the starting position)
-     */
-    vector<coords> get_path(coords const& from, coords const& to) {
-        bool const is_horizontal = from.y == to.y;
-        bool const is_vertical   = from.x == to.x;
+	/* Always returns a vector with at least 1 element (the starting position) */
+	vector<coords> get_path(coords const & from, coords const & to) {
+		bool const is_horizontal = from.y == to.y;
+		bool const is_vertical   = from.x == to.x;
 
-        assert(is_horizontal || is_vertical);
+		assert(is_horizontal || is_vertical);
 
-        auto step = [](int v) -> int { return std::copysign(v/v,v); };
+		auto step = [](int v) -> int { return std::copysign(v / v, v); };
 
-        coords const delta = is_vertical
-            ? coords { 0, step(to.y - from.y) } 
-            : coords { step(to.x - from.x), 0 };
+		coords const delta = is_vertical ? coords(0, step(to.y - from.y)) : coords(step(to.x - from.x), 0);
 
-        vector<coords> path { from };
-        while (path.back() != to)
-            path.push_back(path.back() + delta);
+		vector<coords> path({from});
+		while(path.back() != to)
+			path.push_back(path.back() + delta);
 
-        return path;
-    }
+		return path;
+	}
 }
 
 bool keyboard_event_loop(game_screen & screen, entity & player) {
 	if(kbhit()) {
 		char const key = getch();
-        
+
 		if(tolower(key) == 'q')  // Sneaking in that close key
 			return true;
 
 		coords destination = key_movement(player.position, key);
 
-        // validate new position
-        // validate path is 'free'
-        auto path = get_path(player.position, destination);
+		// validate new position
+		// validate path is 'free'
+		auto path = get_path(player.position, destination);
 
-        for (auto step = next(begin(path)); step!=end(path); ++step)
-        {
-            if (screen.is_valid(*step) && is_free(screen, *step))
-                player.move_to(*step);
-            else
-                break;
-        }
-    }
-    return false;
+		for(auto step = next(begin(path)); step != end(path); ++step) {
+			if(screen.is_valid(*step) && is_free(screen, *step))
+				player.move_to(*step);
+			else
+				break;
+		}
+	}
+	return false;
 }
 
 void gravity(game_screen & screen, entity & entity) {
@@ -153,9 +156,9 @@ void loop() {
 		screen[player.position] = player.body;
 		screen.draw();
 		frame_buffer() << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
-		                 "Use WASD for movement\n"
-		                 "Press Q to quit\n\n"
-		                 "Watch out for the spikes below!\n";
+		                  "Use WASD for movement\n"
+		                  "Press Q to quit\n\n"
+		                  "Watch out for the spikes below!\n";
 		draw_frame();
 
 		if(keyboard_event_loop(screen, player))
@@ -181,7 +184,7 @@ void loop() {
 }
 
 function<void()> main_menu() {
-	static const vector<pair<string_view, function<void()>>> items( { {"Play Gaem", loop}, {"Exit", [&]() {} }});
+	static const vector<pair<string_view, function<void()>>> items({{"Play Gaem", loop}, {"Exit", [&]() {}}});
 
 	size_t idx = 1;
 	for(const auto & item : items)
