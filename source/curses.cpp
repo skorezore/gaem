@@ -24,7 +24,7 @@
 #include "curses.hpp"
 
 
-bool kbhit() {
+bool kbhit() noexcept {
 	bool result = false;
 	nodelay(stdscr, true);
 

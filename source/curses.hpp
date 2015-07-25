@@ -22,8 +22,6 @@
 
 
 #pragma once
-#ifndef CURSES_HPP
-#define CURSES_HPP
 
 
 #ifdef _WIN32
@@ -33,7 +31,4 @@
 #endif
 
 
-bool kbhit();
-
-
-#endif  // CURSES_HPP
+bool kbhit() noexcept;

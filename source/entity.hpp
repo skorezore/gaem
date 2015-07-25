@@ -22,8 +22,6 @@
 
 
 #pragma once
-#ifndef ENTITY_HPP
-#define ENTITY_HPP
 
 
 #include <deque>
@@ -49,6 +47,3 @@ public:
 
 	void move_to(const coords & where);
 };
-
-
-#endif  // ENTITY_HPP
