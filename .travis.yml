@@ -23,10 +23,10 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise
       - r-packages-precise
+      - llvm-toolchain-precise
     packages:
       - g++-5
-      - clang-3.7
       - libncurses5-dev
+      - clang-3.7
 
