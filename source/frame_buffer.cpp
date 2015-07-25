@@ -27,21 +27,8 @@
 using namespace std;
 
 
-ostringstream * frame_buffer;
+std::ostream& frame_buffer() {
+	static ostringstream strm;
+    return strm;
+}
 
-
-class frame_maker_t {
-	ostringstream strm;
-
-	frame_maker_t() {
-		frame_buffer = &strm;
-	}
-
-	~frame_maker_t() {
-		frame_buffer = nullptr;
-	}
-
-	static frame_maker_t instance;
-};
-
-frame_maker_t frame_maker_t::instance;

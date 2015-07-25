@@ -40,13 +40,13 @@ using namespace std::experimental;
 
 
 void draw_frame() {
-	addstr(frame_buffer->str().c_str());
+	addstr(frame_buffer().str().c_str());
 	refresh();
 }
 
 void reset_buffer() {
 	move(0, 0);
-	frame_buffer->str("");
+	frame_buffer().str("");
 }
 
 void clear_screen() {
@@ -120,7 +120,7 @@ void loop() {
 		player.prev_positions.clear();
 		screen[player.position] = player.body;
 		screen.draw();
-		*frame_buffer << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
+		frame_buffer() << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                 "Use WASD for movement\n"
 		                 "Press Q to quit\n\n"
 		                 "Watch out for the spikes below!\n";
@@ -131,8 +131,8 @@ void loop() {
 
 		if(player.position.y > 14) {
 			curs_set(1);
-			frame_buffer->str("");
-			*frame_buffer << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
+			frame_buffer().str("");
+			frame_buffer() << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
 			draw_frame();
 			halfdelay(100);
 			if(tolower(getch()) == 'r') {
@@ -153,8 +153,8 @@ function<void()> main_menu() {
 
 	size_t idx = 1;
 	for(const auto & item : items)
-		*frame_buffer << idx++ << ". " << item.first << '\n';
-	*frame_buffer << "\nPress the key corresponding to your selection: ";
+		frame_buffer() << idx++ << ". " << item.first << '\n';
+	frame_buffer() << "\nPress the key corresponding to your selection: ";
 	draw_frame();
 
 	while(true) {
