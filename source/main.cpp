@@ -32,6 +32,7 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <cassert>
 
 
 using namespace std;
@@ -40,13 +41,13 @@ using namespace std::experimental;
 
 
 void draw_frame() {
-	addstr(frame_buffer->str().c_str());
+	addstr(frame_buffer().str().c_str());
 	refresh();
 }
 
 void reset_buffer() {
 	move(0, 0);
-	frame_buffer->str("");
+	frame_buffer().str("");
 }
 
 void clear_screen() {
@@ -55,36 +56,63 @@ void clear_screen() {
 	reset_buffer();
 }
 
-bool handle_player_movements(game_screen & screen, entity & player) {
+namespace {
+    coords key_movement(coords pos, char key) {
+        switch(key) {
+            case 'w': case 'W': return { pos.x, pos.y -= 2 };
+            case 'a': case 'A': return { pos.x -= 1, pos.y };
+            case 's': case 'S': return { pos.x, pos.y += 1 };
+            case 'd': case 'D': return { pos.x += 1, pos.y };
+        }
+    }
+
+    bool is_free(game_screen& screen, coords pos) {
+        return screen[pos] == game_screen::filler;
+    }
+
+    /*
+     * Always returns a vector with at least 1 element (the starting position)
+     */
+    vector<coords> get_path(coords const& from, coords const& to) {
+        bool const is_horizontal = from.y == to.y;
+        bool const is_vertical   = from.x == to.x;
+
+        assert(is_horizontal || is_vertical);
+
+        auto step = [](int v) { return v/abs(v); };
+
+        coords const delta = is_horizontal
+            ? coords { 0, step(to.y - from.y) } 
+            : coords { step(to.x - from.x), 0 };
+
+        vector<coords> path { from };
+        while (path.back() != to)
+            path.push_back(path.back() + delta);
+    }
+}
+
+bool keyboard_event_loop(game_screen & screen, entity & player) {
 	if(kbhit()) {
-		char key      = tolower(getch());
-		coords newpos = player.position;
-
-		if(key == 'w' && player.position.x > 2 && screen[player.position.below()] != game_screen::filler &&
-		   screen[player.position.above()] == game_screen::filler && screen[player.position.above(2)] == game_screen::filler)
-			newpos.y -= 2;
-
-		if(key == 'a' && player.position.x > 0 && screen[player.position.left()] == game_screen::filler) {
-			--newpos.x;
-			if(screen[player.position.below()] == game_screen::filler && screen[player.position.left(2)] == game_screen::filler)
-				--newpos.x;
-		}
-
-		if(key == 's' && player.position.y < screen.size.y)
-			++newpos.y;
-
-		if(key == 'd' && player.position.x < screen.size.x && screen[player.position.right()] == game_screen::filler) {
-			++newpos.x;
-			if(screen[player.position.below()] == game_screen::filler && screen[player.position.right(2)] == game_screen::filler)
-				++newpos.x;
-		}
-
-		player.move_to(newpos);
-
-		if(key == 'q')  // Sneaking in that close key
+		char const key = getch();
+        
+		if(tolower(key) == 'q')  // Sneaking in that close key
 			return true;
-	}
-	return false;
+
+		coords destination = key_movement(player.position, key);
+
+        // validate new position
+        // validate path is 'free'
+        auto path = get_path(player.position, destination);
+
+        for (auto step = next(begin(path)); step!=end(path); ++step)
+        {
+            if (screen.is_valid(*step) && is_free(screen, *step))
+                player.move_to(*step);
+            else
+                break;
+        }
+    }
+    return false;
 }
 
 void gravity(game_screen & screen, entity & entity) {
@@ -120,19 +148,19 @@ void loop() {
 		player.prev_positions.clear();
 		screen[player.position] = player.body;
 		screen.draw();
-		*frame_buffer << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
+		frame_buffer() << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                 "Use WASD for movement\n"
 		                 "Press Q to quit\n\n"
 		                 "Watch out for the spikes below!\n";
 		draw_frame();
 
-		if(handle_player_movements(screen, player))
+		if(keyboard_event_loop(screen, player))
 			break;
 
 		if(player.position.y > 14) {
 			curs_set(1);
-			frame_buffer->str("");
-			*frame_buffer << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
+			frame_buffer().str("");
+			frame_buffer() << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
 			draw_frame();
 			halfdelay(100);
 			if(tolower(getch()) == 'r') {
@@ -149,12 +177,12 @@ void loop() {
 }
 
 function<void()> main_menu() {
-	static const vector<pair<string_view, function<void()>>> items({{"Play Gaem", loop}, {"Exit", [&]() {}}});
+	static const vector<pair<string_view, function<void()>>> items( { {"Play Gaem", loop}, {"Exit", [&]() {} }});
 
 	size_t idx = 1;
 	for(const auto & item : items)
-		*frame_buffer << idx++ << ". " << item.first << '\n';
-	*frame_buffer << "\nPress the key corresponding to your selection: ";
+		frame_buffer() << idx++ << ". " << item.first << '\n';
+	frame_buffer() << "\nPress the key corresponding to your selection: ";
 	draw_frame();
 
 	while(true) {

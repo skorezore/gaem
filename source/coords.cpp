@@ -22,33 +22,6 @@
 
 
 #include "coords.hpp"
-#include <ostream>
 
 
-using namespace std;
-
-
-coords coords::below(int factor) const {
-	return {x, y + factor};
-}
-
-coords coords::above(int factor) const {
-	return {x, y - factor};
-}
-
-coords coords::left(int factor) const {
-	return {x - factor, y};
-}
-
-coords coords::right(int factor) const {
-	return {x + factor, y};
-}
-
-ostream & operator<<(ostream & strm, const coords & xy) {
-	strm << "{x=" << xy.x << ",y=" << xy.y << '}';
-	return strm;
-}
-
-bool operator<(const coords & lhs, const coords & rhs) {
-	return lhs.y < rhs.y || (lhs.y == rhs.y && lhs.x < rhs.x);
-}
+// IBM: this page intentionally left blank
