@@ -21,48 +21,30 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
+#include "player.hpp"
+#include "curses.hpp"
 
-#include <ostream>
 
-struct coords {
-	int x;
-	int y;
+using namespace std;
 
-	constexpr coords below(int delta = 1) const {
-		return {x, y + delta};
+coords player::movement_destination(const game_screen & screen, int key) {
+	switch(key) {
+		case 'w':
+		case 'W':
+			return {position.x, position.y - (2 * !screen.is_free(position.below()))};
+		case 's':
+		case 'S':
+			return {position.x, position.y + 1};
+		case 'a':
+		case 'A':
+			return {position.x - 1 - screen.is_free(position.below()), position.y};
+		case 'd':
+		case 'D':
+			return {position.x + 1 + screen.is_free(position.below()), position.y};
 	}
-	constexpr coords above(int delta = 1) const {
-		return {x, y - delta};
-	}
-	constexpr coords left(int delta = 1) const {
-		return {x - delta, y};
-	}
-	constexpr coords right(int delta = 1) const {
-		return {x + delta, y};
-	}
-};
-
-inline std::ostream & operator<<(std::ostream & strm, const coords & xy) {
-	return strm << "{x=" << xy.x << ",y=" << xy.y << '}';
+	return position;
 }
 
-inline bool operator<(const coords & lhs, const coords & rhs) {
-	return lhs.y < rhs.y || (lhs.y == rhs.y && lhs.x < rhs.x);
-}
-
-inline bool operator==(const coords & lhs, const coords & rhs) {
-	return lhs.y == rhs.y && lhs.x == rhs.x;
-}
-
-inline bool operator!=(const coords & lhs, const coords & rhs) {
-	return lhs.y != rhs.y || lhs.x != rhs.x;
-}
-
-inline coords operator+(coords const & p, coords const & delta) {
-	return {p.x + delta.x, p.y + delta.y};
-}
-
-inline coords operator-(coords const & p, coords const & delta) {
-	return {p.x - delta.x, p.y - delta.y};
+bool player::is_player() const {
+	return true;
 }

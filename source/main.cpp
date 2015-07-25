@@ -25,6 +25,7 @@
 #include "game_screen.hpp"
 #include "curses.hpp"
 #include "entity.hpp"
+#include "player.hpp"
 #include <experimental/string_view>
 #include <functional>
 #include <sstream>
@@ -58,34 +59,19 @@ void clear_screen() {
 }
 
 namespace {
-	coords key_movement(coords pos, char key) {
-		switch(key) {
-			case 'w':
-			case 'W':
-				return {pos.x, pos.y -= 2};
-			case 'a':
-			case 'A':
-				return {pos.x -= 1, pos.y};
-			case 's':
-			case 'S':
-				return {pos.x, pos.y += 1};
-			case 'd':
-			case 'D':
-				return {pos.x += 1, pos.y};
-		}
-		return pos;
-	}
-
 	/* Always returns a vector with at least 1 element (the starting position) */
 	vector<coords> get_path(const coords & from, const coords & to) {
 		static const auto step = [](int v) -> int { return std::copysign(v / v, v); };
 
-		bool const is_horizontal = from.y == to.y;
-		bool const is_vertical   = from.x == to.x;
+		if(from == to)
+			return {{to}};
+
+		const bool is_horizontal = from.y == to.y;
+		const bool is_vertical   = from.x == to.x;
 
 		assert(is_horizontal || is_vertical);
 
-		coords const delta = is_vertical ? coords{0, step(to.y - from.y)} : coords{step(to.x - from.x), 0};
+		const coords delta = is_vertical ? coords{0, step(to.y - from.y)} : coords{step(to.x - from.x), 0};
 
 		vector<coords> path({from});
 		while(path.back() != to)
@@ -95,32 +81,35 @@ namespace {
 	}
 }
 
-bool keyboard_event_loop(game_screen & screen, entity & player) {
+bool keyboard_event_loop(game_screen & screen, vector<shared_ptr<entity>> & entities) {
 	if(kbhit()) {
-		char const key = getch();
+		const int key = getch();
 
 		if(tolower(key) == 'q')  // Sneaking in that close key
 			return true;
 
-		coords destination = key_movement(player.position, key);
+		for(auto & curent : entities) {
+			coords destination = curent->movement_destination(screen, key);
 
-		// validate new position
-		// validate path is 'free'
-		auto path = get_path(player.position, destination);
+			// validate new position
+			// validate path is 'free'
+			auto path = get_path(curent->position, destination);
 
-		for(auto step = next(begin(path)); step != end(path); ++step) {
-			if(screen.is_valid(*step) && screen.is_free(*step))
-				player.move_to(*step);
-			else
-				break;
+			for(auto step = next(begin(path)); step != end(path); ++step) {
+				if(screen.is_valid(*step) && screen.is_free(*step))
+					curent->move_to(*step);
+				else
+					break;
+			}
 		}
 	}
 	return false;
 }
 
-void gravity(game_screen & screen, entity & entity) {
-	if(entity.position.y < screen.size.y && screen[entity.position.below()] == game_screen::filler)
-		entity.move_to(entity.position.below());
+void gravity(game_screen & screen, vector<shared_ptr<entity>> & entities) {
+	for(auto & curent : entities)
+		if(curent->position.y < screen.size.y && screen[curent->position.below()] == game_screen::filler)
+			curent->move_to(curent->position.below());
 }
 
 void loop() {
@@ -135,20 +124,23 @@ void loop() {
 	screen({10, 14}, '=');
 	screen({11, 14}, '=');
 	// Look at that fancy hardcoded screen ^
-	entity player('X');
+	vector<shared_ptr<entity>> entities;
+	entities.emplace_back(make_shared<player>('X'));
 	bool do_gravity = false;
 
 	curs_set(0);
 	noecho();
 	while(true) {
 		if((do_gravity ^= true) % 2 == 0)
-			gravity(screen, player);
+			gravity(screen, entities);
 		this_thread::sleep_for(time_between_frames);
 		reset_buffer();
-		for(auto & pos : player.prev_positions)
-			screen(pos, game_screen::filler);
-		player.prev_positions.clear();
-		screen(player.position, player.body);
+		for(auto & curent : entities) {
+			for(auto & pos : curent->prev_positions)
+				screen(pos, game_screen::filler);
+			curent->prev_positions.clear();
+			screen(curent->position, curent->body);
+		}
 		screen.draw();
 		frame_buffer() << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
 		                  "Use WASD for movement\n"
@@ -156,10 +148,16 @@ void loop() {
 		                  "Watch out for the spikes below!\n";
 		draw_frame();
 
-		if(keyboard_event_loop(screen, player))
+		if(keyboard_event_loop(screen, entities))
 			break;
 
-		if(player.position.y > 14) {
+		bool fell = false;  // Need to break outer, so can't put ihe if in loop
+		for(const auto & curent : entities)
+			if(curent->position.y > screen.size.y - 2) {
+				fell = true;
+				break;
+			}
+		if(fell) {
 			curs_set(1);
 			frame_buffer().str("");
 			frame_buffer() << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
@@ -187,12 +185,16 @@ function<void()> main_menu() {
 		frame_buffer() << '\t' << idx++ << ". " << item.first << '\n';
 	draw_frame();
 
+	curs_set(0);
+	noecho();
 	while(true) {
 		int key = getch();
 		size_t idx;
 		stringstream(string(1, static_cast<char>(key))) >> idx;
 
 		if(isdigit(key) && idx > 0 && items.size() >= idx) {
+			echo();
+			curs_set(1);
 			clear_screen();
 			return items[idx - 1].second;
 		}
