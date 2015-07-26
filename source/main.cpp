@@ -115,15 +115,8 @@ void gravity(game_screen & screen, vector<shared_ptr<entity>> & entities) {
 void loop() {
 	static const auto time_between_frames = 75ms;
 
-	game_screen screen({16, 16});
-	screen({4, 13}, '=');
-	screen({5, 13}, '=');
-	screen({6, 13}, '=');
-	screen({7, 13}, '=');
-	screen({8, 13}, '=');
-	screen({10, 14}, '=');
-	screen({11, 14}, '=');
-	// Look at that fancy hardcoded screen ^
+	game_screen screen = load_gaemsaev("world.gaemsaev");
+
 	vector<shared_ptr<entity>> entities;
 	entities.emplace_back(make_shared<player>('X'));
 	bool do_gravity = false;
