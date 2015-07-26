@@ -78,6 +78,7 @@ void gaem_screen::operator()(const coords & xy, char newval) {
 		itr->second = newval;
 }
 
+
 gaem_screen load_gaemsaev(const string & path) {
 	ifstream file(path);
 
