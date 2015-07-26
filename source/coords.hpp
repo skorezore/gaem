@@ -44,7 +44,14 @@ struct coords {
 };
 
 inline std::ostream & operator<<(std::ostream & strm, const coords & xy) {
-	return strm << "{x=" << xy.x << ",y=" << xy.y << '}';
+	strm << "{x=" << xy.x << ",y=" << xy.y << '}';
+	return strm;
+}
+
+inline std::ostream & operator>>(std::ostream & strm, coords & xy) {
+	char ignore;
+	strm >> ignore >> ignore >> ignore >> xy.x >> ignore >> ignore >> ignore >> xy.y >> ignore;
+	return strm;
 }
 
 inline bool operator<(const coords & lhs, const coords & rhs) {
