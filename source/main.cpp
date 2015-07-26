@@ -22,7 +22,7 @@
 
 
 #include "frame_buffer.hpp"
-#include "game_screen.hpp"
+#include "gaem_screen.hpp"
 #include "curses.hpp"
 #include "entity.hpp"
 #include "player.hpp"
