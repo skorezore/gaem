@@ -24,6 +24,7 @@
 #pragma once
 
 #include <ostream>
+#include <istream>
 
 struct coords {
 	int x;
@@ -48,7 +49,7 @@ inline std::ostream & operator<<(std::ostream & strm, const coords & xy) {
 	return strm;
 }
 
-inline std::ostream & operator>>(std::ostream & strm, coords & xy) {
+inline std::istream & operator>>(std::istream & strm, coords & xy) {
 	char ignore;
 	strm >> ignore >> ignore >> ignore >> xy.x >> ignore >> ignore >> ignore >> xy.y >> ignore;
 	return strm;
