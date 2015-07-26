@@ -33,6 +33,6 @@ public:
 
 	virtual ~player() = default;
 
-	virtual coords movement_destination(const game_screen & screen, int key) override;
+	virtual coords movement_destination(const gaem_screen & screen, int key) override;
 	virtual bool is_player() const override;
 };

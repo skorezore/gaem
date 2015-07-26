@@ -81,7 +81,7 @@ namespace {
 	}
 }
 
-bool keyboard_event_loop(game_screen & screen, vector<shared_ptr<entity>> & entities) {
+bool keyboard_event_loop(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
 	if(kbhit()) {
 		const int key = getch();
 
@@ -106,16 +106,16 @@ bool keyboard_event_loop(game_screen & screen, vector<shared_ptr<entity>> & enti
 	return false;
 }
 
-void gravity(game_screen & screen, vector<shared_ptr<entity>> & entities) {
+void gravity(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
 	for(auto & curent : entities)
-		if(curent->position.y < screen.size.y && screen[curent->position.below()] == game_screen::filler)
+		if(curent->position.y < screen.size.y && screen[curent->position.below()] == gaem_screen::filler)
 			curent->move_to(curent->position.below());
 }
 
 void loop() {
 	static const auto time_between_frames = 75ms;
 
-	game_screen screen = load_gaemsaev("world.gaemsaev");
+	gaem_screen screen = load_gaemsaev("world.gaemsaev");
 
 	vector<shared_ptr<entity>> entities;
 	entities.emplace_back(make_shared<player>('X'));
@@ -130,7 +130,7 @@ void loop() {
 		reset_buffer();
 		for(auto & curent : entities) {
 			for(auto & pos : curent->prev_positions)
-				screen(pos, game_screen::filler);
+				screen(pos, gaem_screen::filler);
 			curent->prev_positions.clear();
 			screen(curent->position, curent->body);
 		}
@@ -153,7 +153,7 @@ void loop() {
 		if(fell) {
 			curs_set(1);
 			frame_buffer().str("");
-			frame_buffer() << "\nYou fell to your death. Game over!\nPress 'r' to restart (10s): ";
+			frame_buffer() << "\nYou fell to your death. gaem over!\nPress 'r' to restart (10s): ";
 			draw_frame();
 			halfdelay(100);
 			if(tolower(getch()) == 'r') {
