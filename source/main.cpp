@@ -199,5 +199,3 @@ int main() {
 	main_menu()();
 	endwin();
 }
-
-// Hundreth commit hehe

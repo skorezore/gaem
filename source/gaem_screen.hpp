@@ -50,6 +50,8 @@ public:
 	void operator()(const coords & xy, char newval);
 };
 
-gaem_screen load_gaemsave(const std::string & path);
+
+gaem_screen load_gaemsaev(const std::string & path);
+
 
 #endif  // gaem_SCREEN_HPP
