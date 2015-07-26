@@ -119,12 +119,12 @@ void loop() {
 
 	vector<shared_ptr<entity>> entities;
 	entities.emplace_back(make_shared<player>('X'));
-	bool do_gravity = false;
+	unsigned int frames = 0;
 
 	curs_set(0);
 	noecho();
 	while(true) {
-		if((do_gravity ^= true) % 2 == 0)
+		if(frames++ & 1)
 			gravity(screen, entities);
 		this_thread::sleep_for(time_between_frames);
 		reset_buffer();
