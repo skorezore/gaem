@@ -105,15 +105,15 @@ void gravity(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
 void loop() {
 	static const auto time_between_frames = 75ms;
 
-	// gaem_screen screen = load_gaemsaev("gaemsaev");
-	gaem_screen screen({16, 16});
-	screen({4, 13}, '=');
-	screen({5, 13}, '=');
-	screen({6, 13}, '=');
-	screen({7, 13}, '=');
-	screen({8, 13}, '=');
-	screen({10, 14}, '=');
-	screen({11, 14}, '=');
+	gaem_screen screen = load_gaemsaev("gaemsaev");
+	// gaem_screen screen({16, 16});
+	// screen({4, 13}, '=');
+	// screen({5, 13}, '=');
+	// screen({6, 13}, '=');
+	// screen({7, 13}, '=');
+	// screen({8, 13}, '=');
+	// screen({10, 14}, '=');
+	// screen({11, 14}, '=');
 	// Look at that fancy hardcoded screen ^
 
 	vector<shared_ptr<entity>> entities;
