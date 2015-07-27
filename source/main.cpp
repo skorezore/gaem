@@ -135,7 +135,7 @@ void loop() {
 			screen(curent->position, curent->body);
 		}
 		screen.draw();
-		frame_buffer() << "^^^^^^^^^^^^^^^^^^^\n\n"  // Photo-realistic spikes, I know.
+		frame_buffer() << string("^", screen.size.x) << // Photo-realistic spikes, I know.
 		                  "Use WASD for movement\n"
 		                  "Press Q to quit\n\n"
 		                  "Watch out for the spikes below!\n";
