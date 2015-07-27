@@ -24,7 +24,7 @@
 #pragma once
 
 
-#include <sstream>
+#include <ostream>
 
 
-extern std::ostringstream & frame_buffer();
+std::ostream & frame_buffer();

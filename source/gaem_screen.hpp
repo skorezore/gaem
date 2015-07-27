@@ -27,16 +27,15 @@
 
 
 #include "coords.hpp"
-#include <map>
 #include <string>
+#include <vector>
 
 
 class gaem_screen {
 public:
 	static const char filler;
 
-	coords size;
-	std::map<coords, char> map;
+	const coords size;
 
 	gaem_screen(const coords & sz);
 
@@ -48,6 +47,9 @@ public:
 
 	char operator[](const coords & xy);
 	void operator()(const coords & xy, char newval);
+
+private:
+	std::vector<std::vector<char>> map;
 };
 
 

@@ -22,12 +22,22 @@
 
 
 #include "frame_buffer.hpp"
+#include "curses.hpp"
 
 
 using namespace std;
 
 
-std::ostringstream & frame_buffer() {
-	static ostringstream strm;
+class window_streambuf : public streambuf {
+	virtual streamsize xsputn(const char_type * s, streamsize n) override {
+		addstr(string(s, n).c_str());
+		return n;
+	}
+};
+
+
+ostream & frame_buffer() {
+	static window_streambuf buf;
+	static ostream strm(&buf);
 	return strm;
 }

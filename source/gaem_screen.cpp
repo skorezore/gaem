@@ -20,8 +20,9 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-#include <fstream>
 
+#include <fstream>
+#include <iterator>
 #include "gaem_screen.hpp"
 #include "frame_buffer.hpp"
 #include "coords.hpp"
@@ -33,49 +34,36 @@ using namespace std;
 const char gaem_screen::filler = ' ';
 
 
-gaem_screen::gaem_screen(const coords & sz) : size(sz) {
-	coords xy{};
-	for(; xy.x < size.x; ++xy.x) {
-		for(; xy.y < size.y; ++xy.y)
-			map.emplace(xy, filler);
-		xy.y = 0;
-	}
-}
+gaem_screen::gaem_screen(const coords & sz) : size(sz), map(size.y, decltype(map)::value_type(size.x, filler)) {}
 
 void gaem_screen::draw() {
-	for(auto itr = map.begin(); itr != map.end(); ++itr) {
-		for(int i = 1; i < size.x; ++i)
-			frame_buffer() << itr++->second;
-		frame_buffer() << '\n';
-	}
+	for(const auto & row : map)
+		frame_buffer().write(row.data(), row.size()) << '\n';
 }
 
 void gaem_screen::reset() {
-	for(auto & pr : map)
-		pr.second = filler;
+	for(auto & row : map)
+		fill(row.begin(), row.end(), filler);
 }
 
-bool gaem_screen::is_valid(const coords & pos) const {
-	return map.end() != map.find(pos);
+bool gaem_screen::is_valid(const coords & xy) const {
+	return xy.x < size.x && xy.y < size.y;
 }
 
-bool gaem_screen::is_free(const coords & pos) const {
-	const auto itr = map.find(pos);
-	return itr == map.end() || itr->second == filler;
+bool gaem_screen::is_free(const coords & xy) const {
+	return is_valid(xy) && map[xy.y][xy.x] == filler;
 }
 
 char gaem_screen::operator[](const coords & xy) {
-	auto match = map.find(xy);
-	if(map.end() == match)
-		return filler;
+	if(is_valid(xy))
+		return map[xy.y][xy.x];
 	else
-		return match->second;
+		return gaem_screen::filler;
 }
 
 void gaem_screen::operator()(const coords & xy, char newval) {
-	const auto itr = map.find(xy);
-	if(map.end() != itr)
-		itr->second = newval;
+	if(is_valid(xy))
+		map[xy.y][xy.x] = newval;
 }
 
 
@@ -84,11 +72,11 @@ gaem_screen load_gaemsaev(const string & path) {
 
 	coords temp;
 	char content;
-	file >> temp;
+	int x, y;
+	file >> x >> content >> y;
 
-	gaem_screen screen(temp);
-
-	while (file >> temp >> content)
+	gaem_screen screen({x, y});
+	while(file >> temp >> content)
 		screen(temp, content);
 
 	return screen;

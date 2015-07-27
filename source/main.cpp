@@ -42,20 +42,10 @@ using namespace std::chrono;
 using namespace std::experimental;
 
 
-void draw_frame() {
-	addstr(frame_buffer().str().c_str());
-	refresh();
-}
-
-void reset_buffer() {
-	move(0, 0);
-	frame_buffer().str("");
-}
-
 void clear_screen() {
 	clear();
 	refresh();
-	reset_buffer();
+	move(0, 0);
 }
 
 namespace {
@@ -64,7 +54,7 @@ namespace {
 		static const auto step = [](int v) -> int { return std::copysign(v / v, v); };
 
 		if(from == to)
-			return {{to}};
+			return {{from}};
 
 		const bool is_horizontal = from.y == to.y;
 		const bool is_vertical   = from.x == to.x;
@@ -115,7 +105,16 @@ void gravity(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
 void loop() {
 	static const auto time_between_frames = 75ms;
 
-	gaem_screen screen = load_gaemsaev("world.gaemsaev");
+	// gaem_screen screen = load_gaemsaev("gaemsaev");
+	gaem_screen screen({16, 16});
+	screen({4, 13}, '=');
+	screen({5, 13}, '=');
+	screen({6, 13}, '=');
+	screen({7, 13}, '=');
+	screen({8, 13}, '=');
+	screen({10, 14}, '=');
+	screen({11, 14}, '=');
+	// Look at that fancy hardcoded screen ^
 
 	vector<shared_ptr<entity>> entities;
 	entities.emplace_back(make_shared<player>('X'));
@@ -127,7 +126,7 @@ void loop() {
 		if(frames++ & 1)
 			gravity(screen, entities);
 		this_thread::sleep_for(time_between_frames);
-		reset_buffer();
+		move(0, 0);
 		for(auto & curent : entities) {
 			for(auto & pos : curent->prev_positions)
 				screen(pos, gaem_screen::filler);
@@ -135,11 +134,11 @@ void loop() {
 			screen(curent->position, curent->body);
 		}
 		screen.draw();
-		frame_buffer() << string("^", screen.size.x) << // Photo-realistic spikes, I know.
-		                  "Use WASD for movement\n"
-		                  "Press Q to quit\n\n"
-		                  "Watch out for the spikes below!\n";
-		draw_frame();
+		frame_buffer() << string(screen.size.x, '^') << "\n\n"  // Photo-realistic spikes, I know.
+		                                                "Use WASD for movement\n"
+		                                                "Press Q to quit\n\n"
+		                                                "Watch out for the spikes below!\n";
+		refresh();
 
 		if(keyboard_event_loop(screen, entities))
 			break;
@@ -152,9 +151,8 @@ void loop() {
 			}
 		if(fell) {
 			curs_set(1);
-			frame_buffer().str("");
 			frame_buffer() << "\nYou fell to your death. gaem over!\nPress 'r' to restart (10s): ";
-			draw_frame();
+			refresh();
 			halfdelay(100);
 			if(tolower(getch()) == 'r') {
 				clear();
@@ -176,7 +174,7 @@ function<void()> main_menu() {
 	frame_buffer() << "Make your selection:\n\n";
 	for(const auto & item : items)
 		frame_buffer() << '\t' << idx++ << ". " << item.first << '\n';
-	draw_frame();
+	refresh();
 
 	curs_set(0);
 	noecho();

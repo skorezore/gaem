@@ -27,6 +27,7 @@
 
 using namespace std;
 
+
 coords player::movement_destination(const gaem_screen & screen, int key) {
 	switch(key) {
 		case 'w':
