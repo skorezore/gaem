@@ -31,4 +31,5 @@
 #endif
 
 
-bool kbhit() noexcept;
+/** Uses conio.h on Windows and hand-crafted solution otherwise */
+extern "C" int kbhit(void);
