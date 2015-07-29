@@ -145,7 +145,7 @@ void loop() {
 
 		bool fell = false;  // Need to break outer, so can't put ihe if in loop
 		for(const auto & curent : entities)
-			if(curent->position.y > screen.size.y - 2) {
+			if(curent->position.y > screen.size.y - 2 && curent->is_player()) {
 				fell = true;
 				break;
 			}
