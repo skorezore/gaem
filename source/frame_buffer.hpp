@@ -25,6 +25,21 @@
 
 
 #include <ostream>
+#include "curses.hpp"
+
+
+struct chtype_indicator {
+	inline chtype_indicator(chtype nch) : ch(nch) {}
+
+	inline chtype_indicator & operator=(chtype nch) {
+		ch = nch;
+		return *this;
+	}
+
+	chtype ch;
+};
 
 
 std::ostream & frame_buffer();
+
+std::ostream & operator<<(std::ostream & strm, chtype_indicator ch);

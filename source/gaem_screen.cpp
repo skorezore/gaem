@@ -31,14 +31,16 @@
 using namespace std;
 
 
-const char gaem_screen::filler = ' ';
+const chtype gaem_screen::filler = ' ';
 
 
 gaem_screen::gaem_screen(const coords & sz) : size(sz), map(size.y, decltype(map)::value_type(size.x, filler)) {}
 
 void gaem_screen::draw() {
-	for(const auto & row : map)
-		frame_buffer().write(row.data(), row.size()) << '\n';
+	for(const auto & row : map) {
+		copy(begin(row), end(row), ostream_iterator<chtype_indicator>(frame_buffer(), ""));
+		frame_buffer() << '\n';
+	}
 }
 
 void gaem_screen::reset() {
@@ -54,14 +56,14 @@ bool gaem_screen::is_free(const coords & xy) const {
 	return is_valid(xy) && map[xy.y][xy.x] == filler;
 }
 
-char gaem_screen::operator[](const coords & xy) {
+chtype gaem_screen::operator[](const coords & xy) {
 	if(is_valid(xy))
 		return map[xy.y][xy.x];
 	else
 		return gaem_screen::filler;
 }
 
-void gaem_screen::operator()(const coords & xy, char newval) {
+void gaem_screen::operator()(const coords & xy, chtype newval) {
 	if(is_valid(xy))
 		map[xy.y][xy.x] = newval;
 }

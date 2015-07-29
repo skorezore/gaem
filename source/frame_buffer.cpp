@@ -22,7 +22,7 @@
 
 
 #include "frame_buffer.hpp"
-#include "curses.hpp"
+#include <typeinfo>
 
 
 using namespace std;
@@ -39,5 +39,11 @@ class window_streambuf : public streambuf {
 ostream & frame_buffer() {
 	static window_streambuf buf;
 	static ostream strm(&buf);
+	return strm;
+}
+
+ostream & operator<<(ostream & strm, chtype_indicator ch) {
+	addch(ch.ch);
+
 	return strm;
 }

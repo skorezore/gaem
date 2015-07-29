@@ -27,13 +27,14 @@
 
 
 #include "coords.hpp"
+#include "curses.hpp"
 #include <string>
 #include <vector>
 
 
 class gaem_screen {
 public:
-	static const char filler;
+	static const chtype filler;
 
 	const coords size;
 
@@ -45,11 +46,11 @@ public:
 	bool is_valid(const coords & pos) const;
 	bool is_free(const coords & pos) const;
 
-	char operator[](const coords & xy);
-	void operator()(const coords & xy, char newval);
+	chtype operator[](const coords & xy);
+	void operator()(const coords & xy, chtype newval);
 
 private:
-	std::vector<std::vector<char>> map;
+	std::vector<std::vector<chtype>> map;
 };
 
 

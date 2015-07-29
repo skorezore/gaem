@@ -51,7 +51,7 @@ void clear_screen() {
 namespace {
 	/* Always returns a vector with at least 1 element (the starting position) */
 	vector<coords> get_path(const coords & from, const coords & to) {
-		static const auto step = [](int v) -> int { return std::copysign(v / v, v); };
+		static const auto step = [](int v) -> int { return copysign(v / v, v); };
 
 		if(from == to)
 			return {{from}};
@@ -116,9 +116,9 @@ void loop() {
 	// screen({11, 14}, '=');
 	// Look at that fancy hardcoded screen ^
 
-	vector<shared_ptr<entity>> entities;
-	entities.emplace_back(make_shared<player>('X'));
 	unsigned int frames = 0;
+	vector<shared_ptr<entity>> entities;
+	entities.emplace_back(make_shared<player>('X', A_BOLD));
 
 	curs_set(0);
 	noecho();
@@ -131,7 +131,7 @@ void loop() {
 			for(auto & pos : curent->prev_positions)
 				screen(pos, gaem_screen::filler);
 			curent->prev_positions.clear();
-			screen(curent->position, curent->body);
+			screen(curent->position, curent->body | curent->colour);
 		}
 		screen.draw();
 		frame_buffer() << string(screen.size.x, '^') << "\n\n"  // Photo-realistic spikes, I know.
@@ -194,6 +194,9 @@ function<void()> main_menu() {
 
 int main() {
 	initscr();
+	keypad(stdscr, true);
+	if(has_colors())
+		start_color();
 	main_menu()();
 	endwin();
 }

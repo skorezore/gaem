@@ -26,6 +26,7 @@
 
 #include <deque>
 #include "coords.hpp"
+#include "curses.hpp"
 #include "gaem_screen.hpp"
 
 
@@ -35,9 +36,10 @@ public:
 	std::deque<coords> prev_positions;
 	int health = 100;
 	char body;
+	attr_t colour;
 
 
-	entity(char thebody);
+	entity(char thebody, attr_t attrs = A_NORMAL);
 	entity(const entity &) = default;
 	entity(entity &&) = default;
 

@@ -32,15 +32,19 @@ coords player::movement_destination(const gaem_screen & screen, int key) {
 	switch(key) {
 		case 'w':
 		case 'W':
+		case KEY_UP:
 			return {position.x, position.y - (2 * !screen.is_free(position.below()))};
 		case 's':
 		case 'S':
+		case KEY_DOWN:
 			return {position.x, position.y + 1};
 		case 'a':
 		case 'A':
+		case KEY_LEFT:
 			return {position.x - 1 - screen.is_free(position.below()), position.y};
 		case 'd':
 		case 'D':
+		case KEY_RIGHT:
 			return {position.x + 1 + screen.is_free(position.below()), position.y};
 	}
 	return position;
