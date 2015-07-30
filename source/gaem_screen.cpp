@@ -72,6 +72,9 @@ void gaem_screen::operator()(const coords & xy, chtype newval) {
 gaem_screen load_gaemsaev(const string & path) {
 	ifstream file(path);
 
+	if(!file.is_open())
+		return default_gaemsaev();
+
 	coords temp;
 	char content;
 	int x, y;
@@ -81,5 +84,17 @@ gaem_screen load_gaemsaev(const string & path) {
 	while(file >> temp >> content)
 		screen(temp, content);
 
+	return screen;
+}
+
+gaem_screen default_gaemsaev() {
+	gaem_screen screen({16, 16});
+	screen({4, 13}, '=');
+	screen({5, 13}, '=');
+	screen({6, 13}, '=');
+	screen({7, 13}, '=');
+	screen({8, 13}, '=');
+	screen({10, 14}, '=');
+	screen({11, 14}, '=');
 	return screen;
 }

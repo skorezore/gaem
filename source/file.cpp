@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2015 Skorezore
+// Copyright (c) 2015 nabijaczleweli
 
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -21,41 +21,38 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef GAEM_SCREEN_HPP
-#define GAEM_SCREEN_HPP
+#include "file.hpp"
+#include "tinydir.h"
+#include <functional>
 
 
-#include "coords.hpp"
-#include "curses.hpp"
-#include <string>
-#include <vector>
+using namespace std;
 
 
-class gaem_screen {
-public:
-	static const chtype filler;
+struct quickscope_wrapper {
+	function<void()> func;
 
-	const coords size;
-
-	gaem_screen(const coords & sz);
-
-	void draw();
-	void reset();
-
-	bool is_valid(const coords & pos) const;
-	bool is_free(const coords & pos) const;
-
-	chtype operator[](const coords & xy);
-	void operator()(const coords & xy, chtype newval);
-
-private:
-	std::vector<std::vector<chtype>> map;
+	~quickscope_wrapper() {
+		if(func)
+			func();
+	}
 };
 
 
-gaem_screen load_gaemsaev(const std::string & path);
-gaem_screen default_gaemsaev();
+vector<string> list_files(const string & directory, list_type type) {
+	vector<string> result;
+	tinydir_dir dir;
+	tinydir_open_sorted(&dir, directory.c_str());
+	quickscope_wrapper asdf{[&]() { tinydir_close(&dir); }};
 
+	result.reserve(dir.n_files);
+	for(unsigned int i = 0; i < dir.n_files; i++) {
+		tinydir_file file;
+		tinydir_readfile_n(&dir, &file, i);
 
-#endif  // gaem_SCREEN_HPP
+		if(type == list_type::all || (file.is_dir && type == list_type::directories) || (!file.is_dir && type == list_type::files))
+			result.emplace_back(file.name);
+	}
+
+	return result;
+}

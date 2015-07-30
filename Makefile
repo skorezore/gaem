@@ -37,14 +37,19 @@ else
 endif
 
 
-.PHONY : all clean
+.PHONY : all deps clean
 
 
 all :
 	@mkdir -p binaries 2>$(DEVNULL) || :
-	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic
+	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic -Idependencies
 	strip --strip-all --remove-section=.comment --remove-section=.note binaries/gaem$(EXE)
+	@rm -r binaries/assets 2>$(DEVNULL) || :
 	@cp -r assets binaries/assets 2>$(DEVNULL) || :
+
+deps :
+	@mkdir -p dependencies 2>$(DEVNULL) || :
+	curl -s https://raw.githubusercontent.com/cxong/tinydir/master/tinydir.h -o dependencies/tinydir.h
 
 clean :
 	rm -rf binaries

@@ -26,14 +26,17 @@
 #include "curses.hpp"
 #include "entity.hpp"
 #include "player.hpp"
+#include "file.hpp"
 #include <experimental/string_view>
 #include <functional>
+#include <algorithm>
+#include <iterator>
+#include <cassert>
 #include <sstream>
 #include <chrono>
 #include <vector>
 #include <string>
 #include <thread>
-#include <cassert>
 #include <cmath>
 
 
@@ -72,25 +75,23 @@ namespace {
 }
 
 bool keyboard_event_loop(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
-	if(kbhit()) {
-		const int key = getch();
+	const int key = kbhit() ? getch() : ERR;
 
-		if(tolower(key) == 'q')  // Sneaking in that close key
-			return true;
+	if(tolower(key) == 'q')  // Sneaking in that close key
+		return true;
 
-		for(auto & curent : entities) {
-			coords destination = curent->movement_destination(screen, key);
+	for(auto & curent : entities) {
+		coords destination = curent->movement_destination(screen, key);
 
-			// validate new position
-			// validate path is 'free'
-			auto path = get_path(curent->position, destination);
+		// validate new position
+		// validate path is 'free'
+		auto path = get_path(curent->position, destination);
 
-			for(auto step = next(begin(path)); step != end(path); ++step) {
-				if(screen.is_valid(*step) && screen.is_free(*step))
-					curent->move_to(*step);
-				else
-					break;
-			}
+		for(auto step = next(begin(path)); step != end(path); ++step) {
+			if(screen.is_valid(*step) && screen.is_free(*step))
+				curent->move_to(*step);
+			else
+				break;
 		}
 	}
 	return false;
@@ -102,23 +103,24 @@ void gravity(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
 			curent->move_to(curent->position.below());
 }
 
-void loop() {
+class centralizer : public entity {
+	using entity::entity;
+
+	virtual coords movement_destination(const gaem_screen & screen, int) override {
+		return {position.x + (position.x < (screen.size.x / 2) ? 1 : -1), position.y};
+	}
+};
+
+void loop(const function<gaem_screen()> & makescreen) {
 	static const auto time_between_frames = 75ms;
 
-	gaem_screen screen = load_gaemsaev("assets/gaemsaev");
-	// gaem_screen screen({16, 16});
-	// screen({4, 13}, '=');
-	// screen({5, 13}, '=');
-	// screen({6, 13}, '=');
-	// screen({7, 13}, '=');
-	// screen({8, 13}, '=');
-	// screen({10, 14}, '=');
-	// screen({11, 14}, '=');
+	gaem_screen screen = makescreen();
 	// Look at that fancy hardcoded screen ^
 
 	unsigned int frames = 0;
 	vector<shared_ptr<entity>> entities;
 	entities.emplace_back(make_shared<player>('X', A_BOLD));
+	entities.emplace_back(make_shared<centralizer>('C'));
 
 	curs_set(0);
 	noecho();
@@ -157,7 +159,7 @@ void loop() {
 			if(tolower(getch()) == 'r') {
 				clear();
 				nodelay(stdscr, true);
-				loop();
+				loop(makescreen);
 			}
 			nodelay(stdscr, true);
 			break;
@@ -167,8 +169,61 @@ void loop() {
 	curs_set(1);
 }
 
+void save_select() {
+	auto files = list_files("assets/saevs");
+	files.erase(remove_if(begin(files), end(files), [&](const auto & file) { return file.find_first_of(".gaemsaev") == file.size() - 9; }), files.end());
+	transform(begin(files), end(files), begin(files), [&](const auto & file) { return file.substr(0, file.size() - 9); });
+
+	auto itr = begin(files);
+	noecho();
+	curs_set(0);
+	while(true) {
+		bool ctn = true;
+
+		move(0, 0);
+		copy(begin(files), itr, ostream_iterator<string>(frame_buffer(), "\n"));
+		attron(A_REVERSE);
+		frame_buffer() << *itr << '\n';
+		attroff(A_REVERSE);
+		copy(itr + 1, end(files), ostream_iterator<string>(frame_buffer(), "\n"));
+		refresh();
+
+		int ch = getch();
+		switch(ch) {
+			case 'w':
+			case 'W':
+			case KEY_UP:
+				if(itr != begin(files))
+					--itr;
+				break;
+
+			case 's':
+			case 'S':
+			case KEY_DOWN:
+				if(itr != --end(files))
+					++itr;
+				break;
+
+			case '\n':
+			case '\r':
+			case PADENTER:
+			case KEY_ENTER:
+				ctn = false;
+				break;
+		}
+
+		if(!ctn)
+			break;
+	}
+	curs_set(1);
+	echo();
+
+	loop(bind(load_gaemsaev, "assets/saevs/" + *itr + ".gaemsaev"));
+}
+
 function<void()> main_menu() {
-	static const vector<pair<string_view, function<void()>>> items({{"Play Gaem", loop}, {"Exit", [&]() {}}});
+	static const vector<pair<string_view, function<void()>>> items(
+	    {{"Play new Gaem", bind(loop, default_gaemsaev)}, {"Select saev", save_select}, {"Exit", [&]() {}}});
 
 	size_t idx = 1;
 	frame_buffer() << "Make your selection:\n\n";

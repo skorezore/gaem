@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2015 Skorezore
+// Copyright (c) 2015 nabijaczleweli
 
 //  Permission is hereby granted, free of charge, to any person obtaining a
 //  copy of this software and associated documentation files (the "Software"),
@@ -22,40 +22,17 @@
 
 
 #pragma once
-#ifndef GAEM_SCREEN_HPP
-#define GAEM_SCREEN_HPP
 
 
-#include "coords.hpp"
-#include "curses.hpp"
-#include <string>
 #include <vector>
+#include <string>
 
 
-class gaem_screen {
-public:
-	static const chtype filler;
-
-	const coords size;
-
-	gaem_screen(const coords & sz);
-
-	void draw();
-	void reset();
-
-	bool is_valid(const coords & pos) const;
-	bool is_free(const coords & pos) const;
-
-	chtype operator[](const coords & xy);
-	void operator()(const coords & xy, chtype newval);
-
-private:
-	std::vector<std::vector<chtype>> map;
+enum class list_type : unsigned char {
+	all,
+	files,
+	directories,
 };
 
 
-gaem_screen load_gaemsaev(const std::string & path);
-gaem_screen default_gaemsaev();
-
-
-#endif  // gaem_SCREEN_HPP
+std::vector<std::string> list_files(const std::string & directory, list_type type = list_type::files);

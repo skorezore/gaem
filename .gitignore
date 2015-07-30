@@ -1,6 +1,8 @@
 *
 !source/*
 !assets/*
+!source
+!assets
 !.clang-format
 !.dropbox_uploader.enc
 !.gitignore
