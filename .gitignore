@@ -1,6 +1,7 @@
 *
 !source/*
 !assets/*
+!assets/*/*
 !source
 !assets
 !.clang-format
