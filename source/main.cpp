@@ -174,18 +174,22 @@ void save_select() {
 	files.erase(remove_if(begin(files), end(files), [&](const auto & file) { return file.find_first_of(".gaemsaev") == file.size() - 9; }), files.end());
 	transform(begin(files), end(files), begin(files), [&](const auto & file) { return file.substr(0, file.size() - 9); });
 
+	frame_buffer() << "Select the level you want to play";
+
 	auto itr = begin(files);
 	noecho();
 	curs_set(0);
 	while(true) {
 		bool ctn = true;
 
-		move(0, 0);
-		copy(begin(files), itr, ostream_iterator<string>(frame_buffer(), "\n"));
+		move(2, 0);
+		frame_buffer() << '\t';
+		copy(begin(files), itr, ostream_iterator<string>(frame_buffer(), "\n\t"));
 		attron(A_REVERSE);
 		frame_buffer() << *itr << '\n';
 		attroff(A_REVERSE);
-		copy(itr + 1, end(files), ostream_iterator<string>(frame_buffer(), "\n"));
+		frame_buffer() << '\t';
+		copy(itr + 1, end(files), ostream_iterator<string>(frame_buffer(), "\n\t"));
 		refresh();
 
 		int ch = getch();
@@ -206,8 +210,10 @@ void save_select() {
 
 			case '\n':
 			case '\r':
-			case PADENTER:
 			case KEY_ENTER:
+#ifdef PADENTER
+			case PADENTER:
+#endif
 				ctn = false;
 				break;
 		}
