@@ -29,7 +29,9 @@
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
-extern "C" int kbhit(void) {
+
+int nonblocking_getch()
+{
 	termios oldt, newt;
 	int ch;
 	int oldf;
@@ -47,10 +49,15 @@ extern "C" int kbhit(void) {
 	fcntl(STDIN_FILENO, F_SETFL, oldf);
 
 	if(ch != EOF) {
-		ungetc(ch, stdin);
-		return 1;
+		return ch;
 	}
 
-	return 0;
+	return ERR;
+}
+#else
+int nonblocking_getch()
+{
+	return kbhit() ? getch() : ERR;
 }
 #endif
+

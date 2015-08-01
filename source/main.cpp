@@ -76,7 +76,7 @@ namespace {
 }
 
 bool keyboard_event_loop(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
-	const int key = kbhit() ? getch() : ERR;
+	const int key = nonblocking_getch();
 
 	if(tolower(key) == 'q')  // Sneaking in that close key
 		return true;

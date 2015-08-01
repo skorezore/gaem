@@ -31,5 +31,4 @@
 #endif
 
 
-/** Uses conio.h on Windows and hand-crafted solution otherwise */
-extern "C" int kbhit(void);
+int nonblocking_getch();
