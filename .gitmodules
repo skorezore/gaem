@@ -1,0 +1,3 @@
+[submodule "Cpponfiguration"]
+	path = Cpponfiguration
+	url = https://github.com/nabijaczleweli/Cpponfiguration.git

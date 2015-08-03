@@ -23,6 +23,7 @@
 
 #include "frame_buffer.hpp"
 #include "gaem_screen.hpp"
+#include "settings.hpp"
 #include "curses.hpp"
 #include "entity.hpp"
 #include "player.hpp"
@@ -112,8 +113,6 @@ class centralizer : public entity {
 };
 
 void loop(const function<gaem_screen()> & makescreen) {
-	static const auto time_between_frames = 75ms;
-
 	gaem_screen screen = makescreen();
 	// Look at that fancy hardcoded screen ^
 
@@ -127,7 +126,7 @@ void loop(const function<gaem_screen()> & makescreen) {
 	while(true) {
 		if(frames++ & 1)
 			gravity(screen, entities);
-		this_thread::sleep_for(time_between_frames);
+		this_thread::sleep_for(settings().graphics.between_frames);
 		move(0, 0);
 		for(auto & curent : entities) {
 			for(auto & pos : curent->prev_positions)

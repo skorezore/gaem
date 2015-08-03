@@ -4,6 +4,8 @@
 !assets/*/*
 !source
 !assets
+!dependencies
+!Cpponfiguration
 !.clang-format
 !.dropbox_uploader.enc
 !.gitignore
