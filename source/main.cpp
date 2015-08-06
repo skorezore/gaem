@@ -144,7 +144,7 @@ void loop(const function<gaem_screen()> & makescreen) {
 		if(keyboard_event_loop(screen, entities))
 			break;
 
-		bool fell = false;  // Need to break outer, so can't put ihe if in loop
+		bool fell = false;  // Need to break outer, so can't put the if in loop
 		for(const auto & curent : entities)
 			if(curent->position.y > screen.size.y - 2 && curent->is_player()) {
 				fell = true;
