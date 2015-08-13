@@ -26,10 +26,10 @@
 
 #ifdef _WIN32
 #include <curses.h>
+extern "C" int kbhit();
 #else
 #include <ncurses.h>
 #endif
 
 
-/** Uses conio.h on Windows and hand-crafted solution otherwise */
-extern "C" int kbhit(void);
+int nonblocking_getch();
