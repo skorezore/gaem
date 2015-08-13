@@ -24,14 +24,20 @@
 #include "curses.hpp"
 
 
-#ifndef _WIN32
+#ifdef _WIN32
+extern "C" int kbhit();
+
+
+int nonblocking_getch() noexcept {
+	return kbhit() ? getch() : ERR;
+}
+#else
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 
-int nonblocking_getch()
-{
+int nonblocking_getch() noexcept {
 	termios oldt, newt;
 	int ch;
 	int oldf;
@@ -48,16 +54,9 @@ int nonblocking_getch()
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 	fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-	if(ch != EOF) {
+	if(ch != EOF)
 		return ch;
-	}
 
 	return ERR;
 }
-#else
-int nonblocking_getch()
-{
-	return kbhit() ? getch() : ERR;
-}
 #endif
-
