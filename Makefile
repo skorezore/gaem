@@ -53,10 +53,10 @@ all :
 deps :
 	@rm -r dependencies 2>$(DEVNULL) || :
 	@mkdir -p dependencies 2>$(DEVNULL) || :
-	curl -s https://raw.githubusercontent.com/cxong/tinydir/master/tinydir.h -o dependencies/tinydir.h
 	git submodule update --recursive --init
 	$(MAKE) -CCpponfiguration dll
 	cp -r Cpponfiguration/src dependencies/cpponfig && rm `$(FIND) dependencies/cpponfig -name *.cpp`
+	cp tinydir/tinydir.h dependencies/tinydir.h
 
 clean :
 	rm -rf binaries dependencies
