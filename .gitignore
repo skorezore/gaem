@@ -5,8 +5,8 @@
 !source
 !assets
 !dependencies
-!Cpponfiguration
-!tinydir
+!external
+!external/*
 !.clang-format
 !.dropbox_uploader.enc
 !.gitignore

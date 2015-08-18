@@ -44,7 +44,7 @@ endif
 
 all :
 	@mkdir -p binaries 2>$(DEVNULL) || :
-	@cp Cpponfiguration/out/*cpponfig.* binaries 2>$(DEVNULL) || :
+	@cp external/Cpponfiguration/out/*cpponfig.* binaries 2>$(DEVNULL) || :
 	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic -Idependencies -Lbinaries -lcpponfig
 	strip --strip-all --remove-section=.comment --remove-section=.note binaries/gaem$(EXE)
 	@rm -r binaries/assets 2>$(DEVNULL) || :
@@ -54,10 +54,10 @@ deps :
 	@rm -r dependencies 2>$(DEVNULL) || :
 	@mkdir -p dependencies 2>$(DEVNULL) || :
 	git submodule update --recursive --init
-	$(MAKE) -CCpponfiguration dll
-	cp -r Cpponfiguration/src dependencies/cpponfig && rm `$(FIND) dependencies/cpponfig -name *.cpp`
-	cp tinydir/tinydir.h dependencies/tinydir.h
+	$(MAKE) -Cexternal/Cpponfiguration dll
+	cp -r external/Cpponfiguration/src dependencies/cpponfig && rm `$(FIND) dependencies/cpponfig -name *.cpp`
+	cp external/tinydir/tinydir.h dependencies/tinydir.h
 
 clean :
 	rm -rf binaries dependencies
-	$(MAKE) -CCpponfiguration clean
+	$(MAKE) -Cexternal/Cpponfiguration clean
