@@ -30,20 +30,26 @@ using namespace std;
 
 coords player::movement_destination(const gaem_screen & screen, int key) {
 	switch(key) {
-		case 'w':
 		case 'W':
+			return {position.x, position.y - 1};
+		case 'w':
 		case KEY_UP:
 			return {position.x, position.y - (2 * !screen.is_free(position.below()))};
-		case 's':
+
 		case 'S':
+		case 's':
 		case KEY_DOWN:
 			return {position.x, position.y + 1};
-		case 'a':
+
 		case 'A':
+			return {position.x - 1, position.y};
+		case 'a':
 		case KEY_LEFT:
 			return {position.x - 1 - screen.is_free(position.below()), position.y};
-		case 'd':
+
 		case 'D':
+			return {position.x + 1, position.y};
+		case 'd':
 		case KEY_RIGHT:
 			return {position.x + 1 + screen.is_free(position.below()), position.y};
 	}
