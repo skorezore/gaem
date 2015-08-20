@@ -23,8 +23,10 @@
 
 #pragma once
 
+
 #include <ostream>
 #include <istream>
+
 
 struct coords {
 	int x;
@@ -43,6 +45,7 @@ struct coords {
 		return {x + delta, y};
 	}
 };
+
 
 inline std::ostream & operator<<(std::ostream & strm, const coords & xy) {
 	strm << "{x=" << xy.x << ",y=" << xy.y << '}';

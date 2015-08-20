@@ -30,10 +30,10 @@ using namespace std::chrono;
 using namespace cpponfiguration;
 
 
-const settings_t & settings() {
+const gaem_settings & settings() {
 	static configuration cfg("assets/gaem.cfg");
-	static settings_t setts = [&]() {
-		settings_t tmp;
+	static gaem_settings setts = [&]() {
+		gaem_settings tmp;
 		cfg.load();
 
 		cfg.sof_comments = {"This is Gaem's configuration file.", "Modify those values at will, but", "if you break anything, it's your fault."};

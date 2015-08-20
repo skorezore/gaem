@@ -27,11 +27,11 @@
 #include <chrono>
 
 
-struct settings_t {
+struct gaem_settings {
 	struct {
 		std::chrono::milliseconds between_frames;
 	} graphics;
 };
 
 
-const settings_t & settings();
+const gaem_settings & settings();
