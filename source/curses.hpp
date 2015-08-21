@@ -26,10 +26,9 @@
 
 #ifdef _WIN32
 #include <curses.h>
-extern "C" int kbhit();
 #else
 #include <ncurses.h>
 #endif
 
 
-int nonblocking_getch();
+int nonblocking_getch() noexcept;
