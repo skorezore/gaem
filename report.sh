@@ -22,7 +22,7 @@ rm -f report.html report.xml cloc.xsl
 cloc --3 --by-file-by-lang --by-percent c --xsl=1 source/ > /dev/null  # This generates the xsl
 $xmledit --append  '//*[@select="@blank" or @select="@comment"]' -t text -n ''      -v '%'                                                                                                    \
          --subnode '//*[local-name()="body"]'                    -t text -n ''      -v 'APPEND_MARKER'                                                                                        \
-         --subnode '//*[local-name()="td"]' -t attr -n 'align' -v 'center'                                                                                                                    \
+         --subnode '//*[local-name()="td"]'                      -t attr -n 'align' -v 'center'                                                                                                                    \
          --update  '//*[local-name()="title"]'                                      -v "$docname"                                                                                             \
          --rename  '//*[@select="results/header"]/..'                               -v 'h1'                                                                                                   \
          --update  '//*[@select="results/header"]/..'                               -v "$docname"                                                                                             \
