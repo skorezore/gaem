@@ -41,11 +41,6 @@ const gaem_settings & settings() {
 
 		return tmp;
 	}();
-	static struct save_on_exit_t {
-		~save_on_exit_t() {
-			cfg.save();
-		}
-	} save_on_exit;
 
 	return setts;
 }
