@@ -6,10 +6,11 @@ compiler:
   - clang
 
 before_install:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv -in .dropbox_uploader.enc -out .dropbox_uploader -d; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then openssl aes-256-cbc -K $encrypted_53aee1835f86_key -iv $encrypted_53aee1835f86_iv -in .dropbox_uploader.enc -out .dropbox_uploader -d; fi
 
 install:
   - export COMPILER_NAME=$CC
+  - export PATH="$HOME/bin:$PATH"
   - if [ "$CXX" = "g++" ]; then export CXX=g++-5 CC=gcc-5; fi
   - if [ "$CXX" = "clang++" ]; then export CXX=clang++-3.6 CC=clang-3.6; fi
 
@@ -20,7 +21,10 @@ script:
   - make all
 
 after_success:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./deploy.sh; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./deploy.sh; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then mkdir ~/bin && curl -o ~/bin/cloc http://heanet.dl.sourceforge.net/project/cloc/cloc/v1.64/cloc-1.64.pl && chmod +x ~/bin/cloc; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./report.sh; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./deploy.sh --report; fi
 
 addons:
   apt:
@@ -31,5 +35,6 @@ addons:
     packages:
       - g++-5
       - clang-3.6
+      - xmlstarlet
       - libncurses5-dev
 
