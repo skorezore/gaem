@@ -12,6 +12,8 @@
 !.gitignore
 !.travis.yml
 !deploy.sh
+!report.sh
 !Makefile
 !LICENSE
 !README.md
+

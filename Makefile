@@ -59,5 +59,5 @@ deps :
 	cp external/tinydir/tinydir.h dependencies/tinydir.h
 
 clean :
-	rm -rf binaries dependencies
+	rm -rf binaries dependencies report.xml report.html cloc.xsl
 	$(MAKE) -Cexternal/Cpponfiguration clean
