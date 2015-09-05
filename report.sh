@@ -13,6 +13,7 @@ GHUsrProj() {
 	echo "https://github.com/$1/$2/"
 }
 xmlstarlet --version
+apt-cache showpkg xmlstarlet
 insertAll() {
 	for elem in $6
 	do
