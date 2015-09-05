@@ -35,7 +35,7 @@ addons:
       - llvm-toolchain-precise-3.6
     packages:
       - g++-5
+      - libxml2
+      - libxslt1.1
       - clang-3.6
-      - xmlstarlet
       - libncurses5-dev
-
