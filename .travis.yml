@@ -23,6 +23,7 @@ script:
 after_success:
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./deploy.sh; fi
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then mkdir ~/bin && curl -o ~/bin/cloc http://heanet.dl.sourceforge.net/project/cloc/cloc/v1.64/cloc-1.64.pl && chmod +x ~/bin/cloc; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then mkdir ~/tmp && curl -o ~/tmp/xmlstarlet.deb http://ftp.slackware.com/pub/ubuntu/pool/universe/x/xmlstarlet/xmlstarlet_1.6.1-1_amd64.deb && dpkg -x ~/tmp/xmlstarlet.deb ~/tmp/xmlstarlet/ && cp ~/tmp/xmlstarlet/usr/bin/xmlstarlet ~/bin/xmlstarlet; fi
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./report.sh; fi
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./deploy.sh --report; fi
 
