@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash --verbose
 
 glog1='git log -1'
 xmledit='xmlstarlet edit --inplace --ps'
@@ -12,7 +12,7 @@ github_octicon='<span class="octicon octicon-mark-github"></span>'
 GHUsrProj() {
 	echo "https://github.com/$1/$2/"
 }
-
+xmlstarlet --version
 insertAll() {
 	for elem in $6
 	do
