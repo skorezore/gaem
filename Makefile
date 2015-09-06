@@ -23,17 +23,15 @@
 ifeq "$(OS)" "Windows_NT"
 	CURSES_VARIANT := pd
 	DEVNULL := nul
-	FIND := busybox find
 	EXE := .exe
 else
 	CURSES_VARIANT := n
 	DEVNULL := /dev/null
-	FIND := find
 	EXE :=
 endif
 
 ifeq "$(TRAVIS)" "true"
-	CXXCIAR := -static-libstdc++ -static-libgcc
+	CXXCIAR := -static -static-libstdc++ -static-libgcc
 else
 	CXXCIAR :=
 endif
@@ -55,7 +53,7 @@ deps :
 	@mkdir -p dependencies 2>$(DEVNULL) || :
 	git submodule update --recursive --init
 	$(MAKE) -Cexternal/Cpponfiguration dll
-	cp -r external/Cpponfiguration/src dependencies/cpponfig && rm `$(FIND) dependencies/cpponfig -name *.cpp`
+	cp -r external/Cpponfiguration/include dependencies/cpponfig
 	cp external/tinydir/tinydir.h dependencies/tinydir.h
 
 clean :
