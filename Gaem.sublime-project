@@ -1,0 +1,44 @@
+{
+	"build_systems":
+	[
+		{
+			"cmd": "make --no-print-directory -C\"$project_path\" -j all",
+			"name": "Build Gaem"
+		}
+	],
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "Source",
+			"path": "source"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Dependencies",
+			"path": "dependencies"
+		},
+		{
+			"file_include_patterns":
+			[
+				"*Makefile*"
+			],
+			"folder_exclude_patterns":
+			[
+				"*"
+			],
+			"follow_symlinks": true,
+			"name": "Makefiles",
+			"path": "."
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Assets",
+			"path": "assets"
+		},
+	],
+	"settings":
+	{
+		"tab_size": 2
+	}
+}
