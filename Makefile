@@ -43,7 +43,7 @@ endif
 
 all :
 	@mkdir -p binaries 2>$(DEVNULL) || :
-	@cp external/Cpponfiguration/out/*cpponfig.* binaries 2>$(DEVNULL) || :
+	@cp external/Cpponfiguration/out/libcpponfig.a binaries 2>$(DEVNULL) || :
 	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic -Idependencies -Lbinaries -lcpponfig
 	strip --strip-all --remove-section=.comment --remove-section=.note binaries/gaem$(EXE)
 	@rm -r binaries/assets 2>$(DEVNULL) || :
