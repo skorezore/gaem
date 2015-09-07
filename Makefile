@@ -31,8 +31,7 @@ else
 endif
 
 ifeq "$(TRAVIS)" "true"
-	CXXCIAR := -static
-# -static-libstdc++ -static-libgcc
+	CXXCIAR := -static-libstdc++ -static-libgcc
 else
 	CXXCIAR :=
 endif
@@ -43,8 +42,7 @@ endif
 
 all :
 	@mkdir -p binaries 2>$(DEVNULL) || :
-	@cp external/Cpponfiguration/out/libcpponfig.a binaries 2>$(DEVNULL) || :
-	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -l$(CURSES_VARIANT)curses -std=c++14 -Wall -Wextra -pedantic -Idependencies -Lbinaries -lcpponfig
+	$(CXX) $(CXXCIAR) -Os $(foreach src,$(shell ls source | grep .cpp),source/$(src)) -obinaries/gaem$(EXE) -std=c++14 -Wall -Wextra -pedantic -Idependencies -Lexternal/Cpponfiguration/out -lcpponfig -l$(CURSES_VARIANT)curses
 	strip --strip-all --remove-section=.comment --remove-section=.note binaries/gaem$(EXE)
 	@rm -r binaries/assets 2>$(DEVNULL) || :
 	@cp -r assets binaries/assets 2>$(DEVNULL) || :
