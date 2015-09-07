@@ -31,7 +31,8 @@ else
 endif
 
 ifeq "$(TRAVIS)" "true"
-	CXXCIAR := -static -static-libstdc++ -static-libgcc
+	CXXCIAR := -static
+# -static-libstdc++ -static-libgcc
 else
 	CXXCIAR :=
 endif
@@ -52,7 +53,7 @@ deps :
 	@rm -r dependencies 2>$(DEVNULL) || :
 	@mkdir -p dependencies 2>$(DEVNULL) || :
 	git submodule update --recursive --init
-	$(MAKE) -Cexternal/Cpponfiguration dll
+	$(MAKE) -Cexternal/Cpponfiguration static
 	cp -r external/Cpponfiguration/include dependencies/cpponfig
 	cp external/tinydir/tinydir.h dependencies/tinydir.h
 
