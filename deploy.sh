@@ -67,7 +67,9 @@ fi
 
 for folder in $subfolder_name
 do
-	[[ $upload_default ]] && $uploader upload "$temporary_folder/$all_files_temporary_folder" "$folder"
+	$uploader mkdir "$folder"
+
+	[[ $upload_default ]] && $uploader upload "$temporary_folder/$all_files_temporary_folder"/* "$folder"
 	[[ $upload_report ]] && $uploader -s upload "$temporary_folder/$all_files_temporary_folder/report.html" "$folder"
 	[[ $upload_tarball ]] && $uploader upload "$temporary_folder/$folder-$COMPILER_NAME.tar.bz2" "$folder"
 done
