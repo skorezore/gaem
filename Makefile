@@ -52,7 +52,7 @@ deps :
 	@mkdir -p dependencies 2>$(DEVNULL) || :
 	git submodule update --recursive --init
 	$(MAKE) -Cexternal/Cpponfiguration static
-	cp -r external/Cpponfiguration/include dependencies/cpponfig
+	cp -r external/Cpponfiguration/include/cpponfig dependencies
 	cp external/tinydir/tinydir.h dependencies/tinydir.h
 
 clean :
