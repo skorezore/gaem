@@ -41,35 +41,43 @@ chmod +x dropbox_uploader.sh
 [[ $upload_newest ]] && subfolder_name="$subfolder_name 0-newest"
 
 
-all_files_temporary_folder=$(mktemp --dry-run allfiles.XXXXXXXXXX)
-mkdir "$temporary_folder/$all_files_temporary_folder"
+for folder in $subfolder_name
+do
+	if [[ $folder = *newest* ]]
+	then
+		binarysuffix="$COMPILER_NAME"
+	else
+		binarysuffix="$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
+	fi
 
-cp "binaries/gaem" "$temporary_folder/$all_files_temporary_folder/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
-cp -r "assets" "$temporary_folder/$all_files_temporary_folder/"
+	all_files_temporary_folder=$(mktemp --dry-run allfiles.XXXXXXXXXX)
+	mkdir "$temporary_folder/$all_files_temporary_folder"
 
-[[ $upload_report ]] && cp "report.html" "$temporary_folder/$all_files_temporary_folder/"
+	cp "binaries/gaem" "$temporary_folder/$all_files_temporary_folder/gaem-$binarysuffix"
+	cp -r "assets" "$temporary_folder/$all_files_temporary_folder/"
+
+	[[ $upload_report ]] && cp "report.html" "$temporary_folder/$all_files_temporary_folder/"
 
 
-if [[ $upload_tarball ]]
-then
 	for folder in $subfolder_name
 	do
 		mv "$temporary_folder/$all_files_temporary_folder" "$temporary_folder/$folder"
 
-		pushd "$temporary_folder" 1>/dev/null
+		pushd "$temporary_folder" > /dev/null
 		tar -caf "$folder-$COMPILER_NAME.tar.bz2" "$folder"
-		popd 1>/dev/null
+		popd > /dev/null
 
 		mv "$temporary_folder/$folder" "$temporary_folder/$all_files_temporary_folder"
 	done
-fi
 
 
-for folder in $subfolder_name
-do
 	$uploader mkdir "$folder"
 
 	[[ $upload_default ]] && $uploader upload "$temporary_folder/$all_files_temporary_folder"/* "$folder"
 	[[ $upload_report ]] && $uploader -s upload "$temporary_folder/$all_files_temporary_folder/report.html" "$folder"
 	[[ $upload_tarball ]] && $uploader upload "$temporary_folder/$folder-$COMPILER_NAME.tar.bz2" "$folder"
 done
+
+$uploader delete "0-newest/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME" || true
+
+rm -rf "$temporary_folder"
