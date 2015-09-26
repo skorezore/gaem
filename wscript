@@ -1,20 +1,21 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 
 
-import glob
+import os
 
 
-CXX_FLAGS=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe']
+curseslib = ('pdcurses' if 'nt' in os.name else 'ncurses')
 
 
 def options(opts):
 	opts.load('compiler_cxx')
+	opts.recurse('external/Cpponfiguration')
 
 def configure(conf):
 	conf.load('compiler_cxx')
-	conf.check(features='cxx cxxprogram cxxstlib', cxxflags=CXX_FLAGS, uselib_store='M')
+	conf.recurse('external/Cpponfiguration')
+	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
 
 def build(buld):
-	buld(features='cxx cxxstlib', source=glob.glob('external/Cpponfiguration/src/**/*.cpp', recursive=True), target='cpponfiguration', use='M')#, cxxflags=CXX_FLAGS)
-	buld(features='cxx cxxprogram', source=glob.glob('source/**/*.cpp', recursive=True), target='gaem', use=['M', 'cpponfiguration'], cxxflags=['-I../external/Cpponfiguration/include', '-I../external/tinydir'], lib=['curses'])
-
+	buld.recurse('external/Cpponfiguration', 'build')
+	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'cpponfig'], cxxflags=['-I../external/Cpponfiguration/include', '-I../external/tinydir'], lib=[curseslib])
