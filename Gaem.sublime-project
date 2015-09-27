@@ -1,20 +1,21 @@
 {
 	"build_systems":
 	[
+		// Test if it builds on Linux with `cd` or if `sh -c` is needed
 		{
-			"cmd": "waf",
+			"cmd": "cd \"$project_path\" waf",
 			"name": "Build Gaem"
 		},
 		{
-			"cmd": "waf configure",
+			"cmd": "cd \"$project_path\" waf configure",
 			"name": "Configure Gaem for building"
 		},
 		{
-			"cmd": "waf.bat",
+			"cmd": "cmd /c \"cd $project_path && waf.bat\"",
 			"name": "Build Gaem (Windows)"
 		},
 		{
-			"cmd": "waf.bat configure",
+			"cmd": "cmd /c \"cd $project_path && waf.bat configure\"",
 			"name": "Configure Gaem for building (Windows)"
 		}
 	],
