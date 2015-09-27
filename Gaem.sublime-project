@@ -8,6 +8,14 @@
 		{
 			"cmd": "waf configure",
 			"name": "Configure Gaem for building"
+		},
+		{
+			"cmd": "waf.bat",
+			"name": "Build Gaem (Windows)"
+		},
+		{
+			"cmd": "waf.bat configure",
+			"name": "Configure Gaem for building (Windows)"
 		}
 	],
 	"folders":
