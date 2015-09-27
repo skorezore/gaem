@@ -53,7 +53,7 @@ do
 	all_files_temporary_folder=$(mktemp --dry-run allfiles.XXXXXXXXXX)
 	mkdir "$temporary_folder/$all_files_temporary_folder"
 
-	cp "binaries/gaem" "$temporary_folder/$all_files_temporary_folder/gaem-$binarysuffix"
+	cp "build/gaem" "$temporary_folder/$all_files_temporary_folder/gaem-$buildffix"
 	cp -r "assets" "$temporary_folder/$all_files_temporary_folder/"
 
 	[[ $upload_report ]] && cp "report.html" "$temporary_folder/$all_files_temporary_folder/"
