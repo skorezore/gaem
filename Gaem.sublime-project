@@ -4,6 +4,10 @@
 		{
 			"cmd": "waf",
 			"name": "Build Gaem"
+		},
+		{
+			"cmd": "waf configure",
+			"name": "Configure Gaem for building"
 		}
 	],
 	"folders":
@@ -16,20 +20,14 @@
 		{
 			"follow_symlinks": true,
 			"name": "Dependencies",
-			"path": "dependencies"
+			"path": "external"
 		},
 		{
-			"file_include_patterns":
-			[
-				"*Makefile*"
-			],
-			"folder_exclude_patterns":
-			[
-				"*"
-			],
 			"follow_symlinks": true,
-			"name": "Makefiles",
-			"path": "."
+			"name": "Build scripts",
+			"path": ".",
+			"file_include_patterns": ["wscript"],
+			"folder_exclude_patterns": ["*"]
 		},
 		{
 			"follow_symlinks": true,
