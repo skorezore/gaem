@@ -22,7 +22,7 @@ install:
   - install -t ~/bin /tmp/tools/waf
 
 before_script :
-  - export CPPFLAGS="-static-libstdc++ -static-libgcc"
+  - export LDFLAGS="-static-libstdc++ -static-libgcc"
   - waf configure
 
 script:
