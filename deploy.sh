@@ -34,7 +34,7 @@ then
 	$uploader mkdir "$subfolder_name"
 	$uploader upload "build/gaem" "$subfolder_name/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
 	$uploader upload "assets" "$subfolder_name/assets"
-	[[ $upload_report ]] && $uploader upload "report.html" "$subfoldr_name/report.html"
+	[[ $upload_report ]] && $uploader upload "report.html" "$subfolder_name/report.html"
 	$uploader delete "0-newest/assets/assets" || true
 fi
 
