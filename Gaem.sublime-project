@@ -2,7 +2,7 @@
 	"build_systems":
 	[
 		{
-			"cmd": "make --no-print-directory -C\"$project_path\" -j all",
+			"cmd": "waf",
 			"name": "Build Gaem"
 		}
 	],
