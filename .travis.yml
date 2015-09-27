@@ -20,7 +20,8 @@ install:
 
 before_script :
   - export CPPFLAGS="-static-libstdc++ -static-libgcc"
-  - waf -vvv configure --check-cxx-compiler="$CXX" || cat build/config.log
+  - python --version
+  - waf -vvv -kk configure || cat build/config.log
 
 script:
   - waf
