@@ -1,6 +1,6 @@
 #!/bin/bash
 
-uploader="echo ./dropbox_uploader.sh -f .dropbox_uploader"
+uploader="./dropbox_uploader.sh -f .dropbox_uploader"
 
 upload_default=true
 

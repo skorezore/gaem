@@ -32,7 +32,7 @@ after_success:
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then dpkg -x /tmp/tools/xmlstarlet.deb /tmp/tools/xmlstarlet; fi
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then install -t ~/bin /tmp/tools/xmlstarlet/usr/bin/xmlstarlet /tmp/tools/cloc; fi
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./report.sh; fi
-  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./deploy.sh --default --report; fi
+  - if [ -n "$TRAVIS_PULL_REQUEST" ]; then ./deploy.sh --newest --report; fi
 
 cache:
   apt: true
