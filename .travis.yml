@@ -17,8 +17,8 @@ install:
   -
   - mkdir ~/bin
   - wget --no-check-certificate --no-clobber -O /tmp/tools/waf https://waf.io/waf-1.8.14 || true
-  - wget --no-clobber -O /tmp/tools/cloc http://heanet.dl.sourceforge.net/project/cloc/cloc/v1.64/cloc-1.64.pl
-  - wget --no-clobber -O /tmp/tools/xmlstarlet.deb http://ftp.slackware.com/pub/ubuntu/pool/universe/x/xmlstarlet/xmlstarlet_1.6.1-1_amd64.deb
+  - wget --no-clobber -O /tmp/tools/cloc http://heanet.dl.sourceforge.net/project/cloc/cloc/v1.64/cloc-1.64.pl || true
+  - wget --no-clobber -O /tmp/tools/xmlstarlet.deb http://ftp.slackware.com/pub/ubuntu/pool/universe/x/xmlstarlet/xmlstarlet_1.6.1-1_amd64.deb || true
   # Need to do this here, because storing cache happens before after_success
   - install -t ~/bin /tmp/tools/waf
 
