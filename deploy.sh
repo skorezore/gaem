@@ -35,6 +35,7 @@ then
 	$uploader upload "build/gaem" "$subfolder_name/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
 	$uploader upload "assets" "$subfolder_name/assets"
 	[[ $upload_report ]] && $uploader upload "report.html" "$subfoldr_name/report.html"
+	$uploader delete "0-newest/assets/assets" || true
 fi
 
 if [[ $upload_newest ]]
@@ -43,5 +44,6 @@ then
 	$uploader upload "build/gaem" "0-newest/gaem-$COMPILER_NAME"
 	$uploader upload "assets" "0-newest/assets"
 	[[ $upload_report ]] && $uploader upload "report.html" "0-newest/report.html"
+	$uploader delete "0-newest/assets/assets" || true
 fi
 
