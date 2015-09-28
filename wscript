@@ -8,7 +8,7 @@ import shutil
 curseslib = ('pdcurses' if 'nt' in os.name else 'ncurses')
 
 
-def copyassets(rootpath):  # Yes, yes I suck. Googlel doesn't find anything for copying directories recursively
+def copyassets(rootpath):  # Yes, yes I suck. Googlel doesn't find anything for copying directories recursively in waf
 	inassets  = rootpath.find_dir('assets').abspath()
 	outassets = rootpath.get_bld().abspath() + '/assets'
 	shutil.rmtree(outassets, True)

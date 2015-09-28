@@ -30,7 +30,7 @@ using namespace std;
 
 class window_streambuf : public streambuf {
 	virtual streamsize xsputn(const char_type * s, streamsize n) override {
-		addstr(string(s, n).c_str());
+		addnstr(s, n);
 		return n;
 	}
 };
