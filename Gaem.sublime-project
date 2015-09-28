@@ -4,7 +4,7 @@
 		// Targets and syntaxes for colored output with the SublimeANSI plugin (https://github.com/aziz/SublimeANSI)
 		{
 			"working_dir": "$project_path",
-			"shell_cmd": "waf --color yes",
+			"shell_cmd": "waf --color=yes",
 			"name": "Build Gaem",
 
 			"target": "ansi_color_build",
@@ -12,7 +12,7 @@
 		},
 		{
 			"working_dir": "$project_path",
-			"shell_cmd": "waf --color yes configure",
+			"shell_cmd": "waf --color=yes configure",
 			"name": "Configure Gaem for building",
 
 			"target": "ansi_color_build",

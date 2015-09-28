@@ -15,6 +15,8 @@ def configure(conf):
 	conf.load('compiler_cxx')
 	conf.recurse('external/Cpponfiguration')
 	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
+	conf.find_program('ls')
+	conf.find_program('cp')
 
 def build(buld):
 	buld.recurse('external/Cpponfiguration', 'build')
