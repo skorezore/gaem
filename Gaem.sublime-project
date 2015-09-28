@@ -1,22 +1,22 @@
 {
 	"build_systems":
 	[
-		// Test if it builds on Linux with `cd` or if `sh -c` is needed
+		// Targets and syntaxes for colored output with the SublimeANSI plugin (https://github.com/aziz/SublimeANSI)
 		{
-			"cmd": "cd \"$project_path\" waf",
-			"name": "Build Gaem"
+			"working_dir": "$project_path",
+			"shell_cmd": "waf --color yes",
+			"name": "Build Gaem",
+
+			"target": "ansi_color_build",
+			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
 		},
 		{
-			"cmd": "cd \"$project_path\" waf configure",
-			"name": "Configure Gaem for building"
-		},
-		{
-			"cmd": "cmd /c \"cd $project_path && waf.bat\"",
-			"name": "Build Gaem (Windows)"
-		},
-		{
-			"cmd": "cmd /c \"cd $project_path && waf.bat configure\"",
-			"name": "Configure Gaem for building (Windows)"
+			"working_dir": "$project_path",
+			"shell_cmd": "waf --color yes configure",
+			"name": "Configure Gaem for building",
+
+			"target": "ansi_color_build",
+			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
 		}
 	],
 	"folders":
