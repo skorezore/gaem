@@ -18,4 +18,5 @@ def configure(conf):
 
 def build(buld):
 	buld.recurse('external/Cpponfiguration', 'build')
+	os.system('rm -rf build/assets && cp -rf assets build/')
 	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'cpponfig'], cxxflags=['-I../external/Cpponfiguration/include', '-I../external/tinydir'], lib=[curseslib])
