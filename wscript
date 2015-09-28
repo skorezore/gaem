@@ -8,6 +8,12 @@ import shutil
 curseslib = ('pdcurses' if 'nt' in os.name else 'ncurses')
 
 
+def copyassets(rootpath):  # Yes, yes I suck. Googlel doesn't find anything for copying directories recursively
+	inassets  = rootpath.find_dir('assets').abspath()
+	outassets = rootpath.get_bld().abspath() + '/assets'
+	shutil.rmtree(outassets, True)
+	shutil.copytree(inassets, outassets)
+
 def options(opts):
 	opts.load('compiler_cxx')
 	opts.recurse('external/Cpponfiguration')
@@ -20,4 +26,4 @@ def configure(conf):
 def build(buld):
 	buld.recurse('external/Cpponfiguration', 'build')
 	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'cpponfig'], cxxflags=['-I../external/Cpponfiguration/include', '-I../external/tinydir'], lib=[curseslib])
-	shutil.copytree(buld.path.find_dir('assets').abspath(), buld.path.get_bld().abspath() + '/assets', symlinks=True)
+	copyassets(buld.path)
