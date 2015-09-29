@@ -33,12 +33,14 @@
 #include <algorithm>
 #include <iterator>
 #include <cassert>
+#include <fstream>
 #include <sstream>
 #include <chrono>
 #include <vector>
 #include <string>
 #include <thread>
 #include <cmath>
+#include <regex>
 
 
 using namespace std;
@@ -120,6 +122,9 @@ void loop(const function<gaem_screen()> & makescreen) {
 	vector<shared_ptr<entity>> entities;
 	entities.emplace_back(make_shared<player>('X', A_BOLD));
 	entities.emplace_back(make_shared<centralizer>('C'));
+	partition(begin(entities), end(entities), [](const auto & ent) {  // Should be done on every added entity
+		return !ent->is_player();
+	});
 
 	curs_set(0);
 	noecho();
@@ -226,9 +231,53 @@ void save_select() {
 	loop(bind(load_gaemsaev, "assets/saevs/" + *itr + ".gaemsaev"));
 }
 
+void show_credits() {
+	static const regex url_regex("[[:space:]]*https?://.*", regex_constants::optimize);
+	static const vector<pair<string, attr_t>> lines = []() {
+		vector<pair<string, attr_t>> temp;
+		ifstream incredits("assets/credits");
+		for(string line; getline(incredits, line);)
+			temp.emplace_back(line, regex_match(line, url_regex) ? A_UNDERLINE : A_NORMAL);
+		return temp;
+	}();
+
+
+	curs_set(0);
+	halfdelay(settings().credits.time_between_lines);
+	noecho();
+
+	const auto width  = getmaxx(stdscr);
+	const auto height = getmaxy(stdscr);
+	refresh();
+
+	for(auto start = begin(lines); start != end(lines); ++start) {
+		const auto & str = *start;
+		const auto cury = getcury(stdscr);
+		attron(str.second);
+		mvaddstr(cury, (width - str.first.size()) / 2, str.first.c_str());
+		attroff(str.second);
+		refresh();
+
+		if(cury != height - 1)
+			move(cury + 1, 0);
+		else
+			scrl(1);
+
+		getch();
+	}
+
+	echo();
+	nodelay(stdscr, true);
+
+	// Because neither nodelay, nor nocbreak work
+	while(getch() == ERR) {
+	}
+	curs_set(1);
+}
+
 function<void()> main_menu() {
 	static const vector<pair<string_view, function<void()>>> items(
-	    {{"Play new Gaem", bind(loop, default_gaemsaev)}, {"Select saev", save_select}, {"Exit", [&]() {}}});
+	    {{"Play new Gaem", bind(loop, default_gaemsaev)}, {"Select saev", save_select}, {"Credits", show_credits}, {"Exit", [&]() {}}});
 
 	size_t idx = 1;
 	frame_buffer() << "Make your selection:\n\n";
@@ -254,6 +303,7 @@ function<void()> main_menu() {
 
 int main() {
 	initscr();
+	scrollok(stdscr, true);
 	keypad(stdscr, true);
 	if(has_colors())
 		start_color();

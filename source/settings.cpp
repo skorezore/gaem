@@ -37,7 +37,9 @@ const gaem_settings & settings() {
 		cfg.load();
 
 		cfg.sof_comments = {"This is Gaem's configuration file.", "Modify those values at will, but", "if you break anything, it's your fault."};
-		tmp.graphics.between_frames = milliseconds(cfg.get("graphics:time_between_frames", property("75", "In milliseconds")).integer());
+
+		tmp.graphics.between_frames    = milliseconds(cfg.get("graphics:time_between_frames", property("75", "In milliseconds")).integer());
+		tmp.credits.time_between_lines = cfg.get("credits:time_between_lines", property("4", "[1-255] In tenths of a second")).integer();
 
 		return tmp;
 	}();

@@ -31,6 +31,10 @@ struct gaem_settings {
 	struct {
 		std::chrono::milliseconds between_frames;
 	} graphics;
+
+	struct {
+		int time_between_lines;
+	} credits;
 };
 
 
