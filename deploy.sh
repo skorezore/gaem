@@ -28,22 +28,15 @@ curl -Os "https://raw.githubusercontent.com/andreafabrizi/Dropbox-Uploader/maste
 chmod +x dropbox_uploader.sh
 
 
-if [[ $upload_default ]]
-then
-	subfolder_name="$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT_RANGE-$TRAVIS_BRANCH"
-	$uploader mkdir "$subfolder_name"
-	$uploader upload "build/gaem" "$subfolder_name/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
-	$uploader upload "assets" "$subfolder_name/assets"
-	[[ $upload_report ]] && $uploader upload "report.html" "$subfolder_name/report.html"
+upload_to() {
+	$uploader mkdir "$1"
+	$uploader upload "build/gaem" "$1/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
+	$uploader upload "assets" "$1/assets"
+	[[ $upload_report ]] && $uploader upload "report.html" "$1/report.html"
 	$uploader delete "0-newest/assets/assets" || true
-fi
+}
 
-if [[ $upload_newest ]]
-then
-	$uploader mkdir "0-newest"
-	$uploader upload "build/gaem" "0-newest/gaem-$COMPILER_NAME"
-	$uploader upload "assets" "0-newest/assets"
-	[[ $upload_report ]] && $uploader upload "report.html" "0-newest/report.html"
-	$uploader delete "0-newest/assets/assets" || true
-fi
+
+[[ $upload_default ]] && upload_to "$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT_RANGE-$TRAVIS_BRANCH"
+[[ $upload_newest  ]] && upload_to "0-newest"
 
