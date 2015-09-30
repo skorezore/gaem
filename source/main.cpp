@@ -141,7 +141,7 @@ void loop(const function<gaem_screen()> & makescreen) {
 		}
 		screen.draw();
 		frame_buffer() << string(screen.size.x, '^') << "\n\n"  // Photo-realistic spikes, I know.
-		                                                "Use WASD for movement\n"
+		                                                "Use WSAD/^v<> for movement\n"
 		                                                "Press Q to quit\n\n"
 		                                                "Watch out for the spikes below!\n";
 		refresh();
