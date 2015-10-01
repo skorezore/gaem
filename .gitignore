@@ -13,6 +13,7 @@
 !.travis.yml
 !deploy.sh
 !report.sh
+!changelog.sh
 !Makefile
 !wscript
 !LICENSE
