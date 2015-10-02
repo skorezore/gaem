@@ -48,6 +48,7 @@ addons:
       - ubuntu-toolchain-r-test
 #      - llvm-toolchain-precise-3.6
     packages:
+      - ed
       - g++-5
 #      - clang-3.6
       - libxml2

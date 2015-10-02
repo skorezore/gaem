@@ -3,7 +3,7 @@
 uploader="dropbox_uploader -f .dropbox_uploader"
 
 $uploader download "LAST_COMMIT" "LAST_COMMIT"
-$uploader upload "CHANGELOG" "CHANGELOG"
+$uploader download "CHANGELOG" "CHANGELOG"
 
 {
 	echo "0a"
