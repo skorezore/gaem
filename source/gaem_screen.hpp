@@ -36,6 +36,7 @@ class gaem_screen {
 public:
 	static const chtype filler;
 
+
 	const coords size;
 
 	gaem_screen(const coords & sz);
