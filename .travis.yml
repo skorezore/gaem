@@ -28,6 +28,7 @@ before_script :
 
 script:
   - waf
+  - strip --strip-all --remove-section=.comment --remove-section=.note
 
 after_success:
   - if [ -n "$TRAVIS_PULL_REQUEST" ]; then dpkg -x /tmp/tools/xmlstarlet.deb /tmp/tools/xmlstarlet; fi
