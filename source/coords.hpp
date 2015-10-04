@@ -77,3 +77,22 @@ inline coords operator+(coords const & p, coords const & delta) {
 inline coords operator-(coords const & p, coords const & delta) {
 	return {p.x - delta.x, p.y - delta.y};
 }
+
+
+//          Bulbasaur
+//                 __....___ ,  .
+//             _.-~ __...--~~ ~/\
+//   Amw      / /  /          |  |
+//           | |  |            \  \
+//     __ _..---..-~\           |  |
+//    |  ~  .-~-.    \-.__      /  |
+//    /     \.-~        .-~-._/   //
+//   |/-. <| __  .-\    \     \_ //
+//   || o\   \/ /o  |    ~-.-~  \/
+//  /  ~~        ~~              |
+//  \__         ___--/   \  _-~-  \
+//   / ~~--.--~~    /     |/   __  |
+//  |/\ \          |_~|   /    \|  |
+//  |\/  \__       /_-   /\        |
+//  |_ __| |`~-.__|_ _ _/  \ _ _ _/
+//  ' '  ' ' ''   ' ' '     ' ` `
