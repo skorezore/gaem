@@ -63,25 +63,6 @@ chtype gaem_screen::operator[](const coords & xy) {
 		return gaem_screen::filler;
 }
 
-
-//          Bulbasaur
-//                 __....___ ,  .
-//             _.-~ __...--~~ ~/\
-//   Amw      / /  /          |  |
-//           | |  |            \  \
-//     __ _..---..-~\           |  |
-//    |  ~  .-~-.    \-.__      /  |
-//    /     \.-~        .-~-._/   //
-//   |/-. <| __  .-\    \     \_ //
-//   || o\   \/ /o  |    ~-.-~  \/
-//  /  ~~        ~~              |
-//  \__         ___--/   \  _-~-  \
-//   / ~~--.--~~    /     |/   __  |
-//  |/\ \          |_~|   /    \|  |
-//  |\/  \__       /_-   /\        |
-//  |_ __| |`~-.__|_ _ _/  \ _ _ _/
-//  ' '  ' ' ''   ' ' '     ' ` `
-
 void gaem_screen::operator()(const coords & xy, chtype newval) {
 	if(is_valid(xy))
 		map[xy.y][xy.x] = newval;
