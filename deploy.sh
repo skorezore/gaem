@@ -29,13 +29,13 @@ done
 
 upload_to() {
 	$uploader mkdir "$1"
-	$uploader upload "build/gaem" "$1/gaem-$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
+	$uploader upload "build/gaem" "$1/gaem-$2"
 	$uploader upload "assets" "$1/assets"
 	[[ $upload_report ]] && $uploader upload "report.html" "$1/report.html"
 	[[ $upload_changelog ]] && $uploader upload "report.html" "$1/report.html"
-	$uploader delete "0-newest/assets/assets" || true
+	$uploader delete "$1/assets/assets" || true
 }
 
 
-[[ $upload_default ]] && upload_to "$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT_RANGE-$TRAVIS_BRANCH"
-[[ $upload_newest  ]] && upload_to "0-newest"
+[[ $upload_default ]] && upload_to "$TRAVIS_BUILD_NUMBER-$TRAVIS_COMMIT_RANGE-$TRAVIS_BRANCH" "$TRAVIS_BUILD_NUMBER-$COMPILER_NAME"
+[[ $upload_newest  ]] && upload_to "0-newest" "$COMPILER_NAME"
