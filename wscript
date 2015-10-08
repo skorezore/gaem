@@ -8,12 +8,6 @@ import shutil
 curseslib = ('pdcurses' if 'nt' in os.name else 'ncurses')
 
 
-def copyassets(rootpath):  # Yes, yes I suck. Googlel doesn't find anything for copying directories recursively in waf
-	inassets  = rootpath.find_dir('assets').abspath()
-	outassets = rootpath.get_bld().abspath() + '/assets'
-	shutil.rmtree(outassets, True)
-	shutil.copytree(inassets, outassets)
-
 def options(opts):
 	opts.load('compiler_cxx')
 	opts.recurse('external/Cpponfiguration')
@@ -22,8 +16,35 @@ def configure(conf):
 	conf.load('compiler_cxx')
 	conf.recurse('external/Cpponfiguration')
 	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
+	conf.check(features='cxx cxxprogram', lib=curseslib, uselib_store='M')
+	conf.check(features='cxx cxxprogram', header_name='curses.h', mandatory=False)
+	conf.check(features='cxx cxxprogram', header_name='ncurses.h', mandatory=False)
+	conf.check(fragment    = '''
+	                           #include <stdio.h>
+	                           int main() {
+	                             #if HAVE_CURSES_H
+	                               printf("curses.h");
+	                             #elif HAVE_NCURSES_H
+	                               printf("ncurses.h");
+	                             #else
+	                               return 1;
+	                             #endif
+	                             return 0;
+	                           }
+	                        ''',
+	           define_name = 'CURSES_LIB',
+	           execute     = True,
+	           define_ret  = True,
+	           mandatory   = True)
+	conf.write_config_header('config.h')
 
 def build(buld):
 	buld.recurse('external/Cpponfiguration', 'build')
-	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'cpponfig'], cxxflags=['-I../external/Cpponfiguration/include', '-I../external/tinydir'], lib=[curseslib])
-	copyassets(buld.path)
+	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'cpponfig'], includes='../external/Cpponfiguration/include ../external/tinydir')
+	buld(rule=copyassets, always=True)
+
+def copyassets(self):
+	inassets  = self.generator.bld.path.find_dir('assets').abspath()
+	outassets = self.generator.bld.path.get_bld().abspath() + '/assets'
+	shutil.rmtree(outassets, True)
+	shutil.copytree(inassets, outassets)

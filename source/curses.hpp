@@ -24,11 +24,8 @@
 #pragma once
 
 
-#ifdef _WIN32
-#include <curses.h>
-#else
-#include <ncurses.h>
-#endif
+#include "config.h"
+#include CURSES_LIB
 
 
 int nonblocking_getch() noexcept;
