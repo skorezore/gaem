@@ -1,6 +1,3 @@
 [submodule "external/tinydir"]
 	path = external/tinydir
 	url = https://github.com/cxong/tinydir.git
-[submodule "external/Cpponfiguration"]
-	path = external/Cpponfiguration
-	url = https://github.com/nabijaczleweli/Cpponfiguration.git
