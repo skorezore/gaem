@@ -7,6 +7,7 @@
 !dependencies
 !external
 !external/*
+!external/**
 !.clang-format
 !.dropbox_uploader.enc
 !.gitignore
