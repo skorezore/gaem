@@ -42,7 +42,7 @@
 			"follow_symlinks": true,
 			"name": "Assets",
 			"path": "assets"
-		},
+		}
 	],
 	"settings":
 	{
