@@ -22,27 +22,40 @@
 
 
 #include "settings.hpp"
-#include "cpponfig/configuration.hpp"
+#include "util/quickscope_wrapper.hpp"
+#include "boost/property_tree/info_parser.hpp"
+#include <fstream>
 
 
 using namespace std;
 using namespace std::chrono;
-using namespace cpponfiguration;
+
+namespace pt = boost::property_tree;
 
 
 const gaem_settings & settings() {
-	static configuration cfg("assets/gaem.cfg");
 	static gaem_settings setts = [&]() {
+		pt::ptree tree;
+		ifstream ifs("assets/gaem.cfg");  // Force-create
+		pt::read_info(ifs, tree);
+
 		gaem_settings tmp;
-		cfg.load();
 
-		cfg.sof_comments = {"This is Gaem's configuration file.", "Modify those values at will, but", "if you break anything, it's your fault."};
-
-		tmp.graphics.between_frames    = milliseconds(cfg.get("graphics:time_between_frames", property("75", "In milliseconds")).integer());
-		tmp.credits.time_between_lines = cfg.get("credits:time_between_lines", property("4", "[1-255] In tenths of a second")).integer();
+		tmp.graphics.between_frames    = milliseconds(tree.get("graphics.time_between_frames", 75));
+		tmp.credits.time_between_lines = tree.get("credits.time_between_lines", 4);
 
 		return tmp;
 	}();
+	static quickscope_wrapper saviour{[&]() {
+		pt::ptree tree;
+
+		tree.put("graphics.time_between_frames", setts.graphics.between_frames.count());
+		tree.put("graphics.time_between_frames^", "In milliseconds"s);
+		tree.put("credits.time_between_lines", setts.credits.time_between_lines);
+		tree.put("credits.time_between_lines^", "[1-255] In tenths of a second"s);
+
+		pt::write_info("assets/gaem.cfg", tree);
+	}};
 
 	return setts;
 }
