@@ -1,12 +1,11 @@
 *
+!source
 !source/*
+!source/*/*
+!assets
 !assets/*
 !assets/*/*
-!source
-!assets
 !dependencies
-!external
-!external/*
 !external/**
 !.clang-format
 !.dropbox_uploader.enc

@@ -21,28 +21,10 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#include "file.hpp"
-#include "tinydir.h"
-#include "util/quickscope_wrapper.hpp"
+#include "quickscope_wrapper.hpp"
 
 
-using namespace std;
-
-
-vector<string> list_files(const string & directory, list_type type) {
-	vector<string> result;
-	tinydir_dir dir;
-	tinydir_open_sorted(&dir, directory.c_str());
-	quickscope_wrapper asdf{[&]() { tinydir_close(&dir); }};
-
-	result.reserve(dir.n_files);
-	for(unsigned int i = 0; i < dir.n_files; i++) {
-		tinydir_file file;
-		tinydir_readfile_n(&dir, &file, i);
-
-		if(type == list_type::all || (file.is_dir && type == list_type::directories) || (!file.is_dir && type == list_type::files))
-			result.emplace_back(file.name);
-	}
-
-	return result;
+quickscope_wrapper::~quickscope_wrapper() {
+	if(func)
+		func();
 }
