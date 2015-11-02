@@ -13,6 +13,7 @@ def options(opts):
 
 def configure(conf):
 	conf.load('compiler_cxx')
+	conf.env.append_value('INCLUDES', ['.', '../external/property_tree', '../external/tinydir'])
 	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
 	conf.check(features='cxx cxxprogram', lib=curseslib, uselib_store='M')
 	conf.check(features='cxx cxxprogram', header_name='curses.h', mandatory=False)
@@ -37,7 +38,7 @@ def configure(conf):
 	conf.write_config_header('config.h')
 
 def build(buld):
-	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use='M', includes='../external/property_tree ../external/tinydir')
+	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use='M')
 	buld(rule=copyassets, always=True)
 
 def copyassets(self):
