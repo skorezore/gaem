@@ -14,6 +14,10 @@ To build Gaem, all one needs to do is:
 > `waf configure`<br />
 > `waf`
 
+## FAQ
+Q: its not werk on MSVC/VS youu suck i hoep you dyeeee!  
+A: Use a compiler (such as `clang` or GCC), not a cimploler
+
 ## Binaries
 For those who don't want to bother having to compile from source, we have binaries that you may download for:
  * [Windows x86_64](https://www.dropbox.com/s/rqftmlpp3ez3hig/Gaem.exe?dl=1). Beware: they aren't always up-to-date.
