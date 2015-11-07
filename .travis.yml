@@ -10,7 +10,7 @@ matrix:
             - ed
             - g++-5
             - libxml2
-            - libx11-dev
+            - libxmu-dev
             - libxslt1.1
             - libncurses5-dev
           sources: &sources
@@ -24,7 +24,7 @@ matrix:
             - ed
             - libxml2
             - clang-3.8
-            - libx11-dev
+            - libxmu-dev
             - libxslt1.1
             - libncurses5-dev
           sources: *sources
