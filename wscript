@@ -5,7 +5,7 @@ import os
 import shutil
 
 
-bearlibterminaldeps = (['gdi32', 'winmm'] if 'nt' in os.name else [])
+bearlibterminaldeps = (['gdi32', 'winmm', 'opengl32'] if 'nt' in os.name else ['opengl'])
 sources_freetype = list(map(lambda x: 'external/BearLibTerminal/Terminal/Dependencies/FreeType/Source/' + x + '.c',
 	                          ['autofit/autofit', 'base/ftbase', 'base/ftbbox', 'base/ftdebug', 'base/ftfstype', 'base/ftgasp', 'base/ftglyph', 'base/ftinit',
 	                          'base/ftlcdfil', 'base/ftmm', 'base/ftsystem', 'raster/raster', 'sfnt/sfnt', 'smooth/smooth', 'truetype/truetype']))
@@ -27,7 +27,6 @@ def configure(conf):
 	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
 	conf.check(features='cxx cxxstlib', cxxflags=['-std=c++14', '-Wno-deprecated-register', '-Wno-uninitialized', '-Wno-potentially-evaluated-expression',
 		                                            '-Wno-return-type', '-O3','-pipe'], uselib_store='T')
-	conf.check(features='cxx cxxshlib', lib='opengl32', uselib_store='T')
 	for dep in bearlibterminaldeps:
 		conf.check(features='cxx cxxshlib', lib=dep, uselib_store='T')
 	conf.write_config_header('config.h')
