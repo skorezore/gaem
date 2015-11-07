@@ -24,8 +24,8 @@ def configure(conf):
 	conf.load('compiler_c')
 	conf.env.append_value('INCLUDES', ['.', '../external/property_tree', '../external/tinydir', '../external/BearLibTerminal/Terminal/Include/C'] +
 		                                list(map(lambda x: '../external/BearLibTerminal/Terminal/Dependencies/' + x + '/Include', ['FreeType', 'NanoJPEG', 'PicoPNG'])))
-	conf.check(features='c cstlib', cflags=['-std=c11', '-O3', '-pipe'] + defines_freetype, uselib_store='F')
-	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
+	conf.check(features='c cstlib', cflags=['-std=c11', '-O3', '-pipe'] + defines_freetype + fpic, uselib_store='F')
+	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'] + fpic, uselib_store='M')
 	conf.check(features='cxx cxxshlib', cxxflags=['-std=c++14', '-Wno-deprecated-register', '-Wno-uninitialized', '-Wno-potentially-evaluated-expression',
 		                                            '-Wno-return-type', '-O3','-pipe'] + fpic, uselib_store='T')
 	for dep in bearlibterminaldeps:
