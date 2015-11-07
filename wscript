@@ -25,8 +25,8 @@ def configure(conf):
 		                                list(map(lambda x: '../external/BearLibTerminal/Terminal/Dependencies/' + x + '/Include', ['FreeType', 'NanoJPEG', 'PicoPNG'])))
 	conf.check(features='c cstlib', cflags=['-std=c11', '-O3', '-pipe'] + defines_freetype, uselib_store='F')
 	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
-	conf.check(features='cxx cxxstlib', cxxflags=['-std=c++14', '-Wno-deprecated-register', '-Wno-maybe-uninitialized', '-Wno-potentially-evaluated-expression', '-O3',
-		                                            '-pipe'], uselib_store='T')
+	conf.check(features='cxx cxxstlib', cxxflags=['-std=c++14', '-Wno-deprecated-register', '-Wno-uninitialized', '-Wno-potentially-evaluated-expression',
+		                                            '-Wno-return-type', '-O3','-pipe'], uselib_store='T')
 	conf.check(features='cxx cxxprogram', lib=curseslib, uselib_store='M')
 	conf.check(features='cxx cxxprogram', header_name='curses.h', mandatory=False)
 	conf.check(features='cxx cxxprogram', header_name='ncurses.h', mandatory=False)
