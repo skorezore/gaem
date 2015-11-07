@@ -6,7 +6,7 @@ import shutil
 
 
 fpic = ([] if 'nt' in os.name else ['-fPIC'])
-bearlibterminaldeps = (['gdi32', 'winmm', 'opengl32'] if 'nt' in os.name else ['X11', 'gl'])
+bearlibterminaldeps = (['gdi32', 'winmm', 'opengl32'] if 'nt' in os.name else ['X11'])
 sources_freetype = list(map(lambda x: 'external/BearLibTerminal/Terminal/Dependencies/FreeType/Source/' + x + '.c',
 	                          ['autofit/autofit', 'base/ftbase', 'base/ftbbox', 'base/ftdebug', 'base/ftfstype', 'base/ftgasp', 'base/ftglyph', 'base/ftinit',
 	                          'base/ftlcdfil', 'base/ftmm', 'base/ftsystem', 'raster/raster', 'sfnt/sfnt', 'smooth/smooth', 'truetype/truetype']))
