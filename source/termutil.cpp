@@ -21,37 +21,9 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#include "curses.hpp"
+#include "BearLibTerminal.h"
 
 
-#ifdef _WIN32
-extern "C" int kbhit();
-
-
-int nonblocking_getch() noexcept {
-	return kbhit() ? getch() : ERR;
+int nonblocking_read() noexcept {
+	return terminal_has_input() ? terminal_read() : 0;
 }
-#else
-#include <termios.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-
-int nonblocking_getch() noexcept {
-	termios oldt, newt;
-
-	tcgetattr(STDIN_FILENO, &oldt);
-	newt = oldt;
-	newt.c_lflag &= ~(ICANON | ECHO);
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-	const auto oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-	fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-
-	const auto ch = getchar();
-
-	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-	fcntl(STDIN_FILENO, F_SETFL, oldf);
-
-	return (ch != EOF) ? ch : ERR;
-}
-#endif

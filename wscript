@@ -5,7 +5,7 @@ import os
 import shutil
 
 
-curseslib = ('pdcurses' if 'nt' in os.name else 'ncurses')
+bearlibterminaldeps = (['gdi32', 'winmm'] if 'nt' in os.name else [])
 sources_freetype = list(map(lambda x: 'external/BearLibTerminal/Terminal/Dependencies/FreeType/Source/' + x + '.c',
 	                          ['autofit/autofit', 'base/ftbase', 'base/ftbbox', 'base/ftdebug', 'base/ftfstype', 'base/ftgasp', 'base/ftglyph', 'base/ftinit',
 	                          'base/ftlcdfil', 'base/ftmm', 'base/ftsystem', 'raster/raster', 'sfnt/sfnt', 'smooth/smooth', 'truetype/truetype']))
@@ -27,33 +27,16 @@ def configure(conf):
 	conf.check(features='cxx cxxprogram', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'], uselib_store='M')
 	conf.check(features='cxx cxxstlib', cxxflags=['-std=c++14', '-Wno-deprecated-register', '-Wno-uninitialized', '-Wno-potentially-evaluated-expression',
 		                                            '-Wno-return-type', '-O3','-pipe'], uselib_store='T')
-	conf.check(features='cxx cxxprogram', lib=curseslib, uselib_store='M')
-	conf.check(features='cxx cxxprogram', header_name='curses.h', mandatory=False)
-	conf.check(features='cxx cxxprogram', header_name='ncurses.h', mandatory=False)
-	conf.check(fragment    = '''
-	                           #include <stdio.h>
-	                           int main() {
-	                             #if HAVE_CURSES_H
-	                               printf("curses.h");
-	                             #elif HAVE_NCURSES_H
-	                               printf("ncurses.h");
-	                             #else
-	                               return 1;
-	                             #endif
-	                             return 0;
-	                           }
-	                        ''',
-	           define_name = 'CURSES_LIB',
-	           execute     = True,
-	           define_ret  = True,
-	           mandatory   = True)
+	conf.check(features='cxx cxxshlib', lib='opengl32', uselib_store='T')
+	for dep in bearlibterminaldeps:
+		conf.check(features='cxx cxxshlib', lib=dep, uselib_store='T')
 	conf.write_config_header('config.h')
 
 def build(buld):
 	buld(features='c cstlib', source=sources_freetype, target='freetype', use='F')
 	buld(features='cxx cxxstlib', source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Dependencies/PicoPNG/Source/**/*.cpp'), target='picopng', use='T')
-	buld(features='cxx cxxstlib', source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Source/**/*.cpp'), target='bearlibterminal', use='T')
-	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'freetype', 'picopng', 'bearlibterminal'])
+	buld(features='cxx cxxshlib', source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Source/**/*.cpp'), target='bearlibterminal', use=['T', 'freetype', 'picopng'])
+	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'bearlibterminal'])
 	buld(rule=copyassets, always=True)
 
 def copyassets(self):

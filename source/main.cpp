@@ -21,16 +21,17 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#include "frame_buffer.hpp"
-#include "gaem_screen.hpp"
+#include "gaem_map.hpp"
+#include "termutil.hpp"
 #include "settings.hpp"
-#include "curses.hpp"
 #include "entity.hpp"
 #include "player.hpp"
 #include "file.hpp"
+#include "BearLibTerminal.h"
 #include <experimental/string_view>
 #include <functional>
 #include <algorithm>
+#include <iostream>
 #include <iterator>
 #include <cassert>
 #include <fstream>
@@ -47,12 +48,6 @@ using namespace std;
 using namespace std::chrono;
 using namespace std::experimental;
 
-
-void clear_screen() {
-	clear();
-	refresh();
-	move(0, 0);
-}
 
 namespace {
 	/* Always returns a vector with at least 1 element (the starting position) */
@@ -77,21 +72,21 @@ namespace {
 	}
 }
 
-bool keyboard_event_loop(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
-	const int key = nonblocking_getch();
+bool keyboard_event_loop(gaem_map & map, vector<shared_ptr<entity>> & entities) {
+	const int key = nonblocking_read();
 
 	if(tolower(key) == 'q')  // Sneaking in that close key
 		return true;
 
 	for(auto & curent : entities) {
-		coords destination = curent->movement_destination(screen, key);
+		coords destination = curent->movement_destination(map, key);
 
 		// validate new position
 		// validate path is 'free'
 		auto path = get_path(curent->position, destination);
 
 		for(auto step = next(begin(path)); step != end(path); ++step) {
-			if(screen.is_valid(*step) && screen.is_free(*step))
+			if(map.is_valid(*step) && map.is_free(*step))
 				curent->move_to(*step);
 			else
 				break;
@@ -100,77 +95,81 @@ bool keyboard_event_loop(gaem_screen & screen, vector<shared_ptr<entity>> & enti
 	return false;
 }
 
-void gravity(gaem_screen & screen, vector<shared_ptr<entity>> & entities) {
+void gravity(gaem_map & map, vector<shared_ptr<entity>> & entities) {
 	for(auto & curent : entities)
-		if(curent->position.y < screen.size.y && screen[curent->position.below()] == gaem_screen::filler)
+		if(curent->position.y < map.size.y && map[curent->position.below()] == gaem_map::filler)
 			curent->move_to(curent->position.below());
 }
 
 class centralizer : public entity {
 	using entity::entity;
 
-	virtual coords movement_destination(const gaem_screen & screen, int) override {
-		return {position.x + (position.x < (screen.size.x / 2) ? 1 : -1), position.y};
+	virtual coords movement_destination(const gaem_map & map, int) override {
+		return {position.x + (position.x < (map.size.x / 2) ? 1 : -1), position.y};
 	}
 };
 
-void loop(const function<gaem_screen()> & makescreen) {
-	gaem_screen screen = makescreen();
+void loop(const function<gaem_map()> & makemap) {
+	gaem_map map = makemap();
 	// Look at that fancy hardcoded screen ^
 
 	unsigned int frames = 0;
 	vector<shared_ptr<entity>> entities;
-	entities.emplace_back(make_shared<player>('X', A_BOLD));
+	entities.emplace_back(make_shared<player>('X', 0xFFFAFAFA));
 	entities.emplace_back(make_shared<centralizer>('C'));
 	partition(begin(entities), end(entities), [](const auto & ent) {  // Should be done on every added entity
 		return !ent->is_player();
 	});
 
-	curs_set(0);
-	noecho();
+	terminal_set("input.cursor-symbol = 0x20;");
+	// noecho();
 	while(true) {
 		if(frames++ & 1)
-			gravity(screen, entities);
+			gravity(map, entities);
 		this_thread::sleep_for(settings().graphics.between_frames);
-		move(0, 0);
 		for(auto & curent : entities) {
 			for(auto & pos : curent->prev_positions)
-				screen(pos, gaem_screen::filler);
+				map(pos, gaem_map::filler);
 			curent->prev_positions.clear();
-			screen(curent->position, curent->body | curent->colour);
+			map(curent->position, curent->body | curent->colour);
 		}
-		screen.draw();
-		frame_buffer() << string(screen.size.x, '^') << "\n\n"  // Photo-realistic spikes, I know.
-		                                                "Use WSAD/^v<> for movement\n"
-		                                                "Press Q to quit\n\n"
-		                                                "Watch out for the spikes below!\n";
-		refresh();
+		map.draw();
+		terminal_print(0, map.size.y, string(map.size.x, '^').c_str());  // Photo-realistic spikes, I know.
+		terminal_print(0, map.size.y + 1, "\n\n"
+		                                  "Use WSAD/^v<> for movement\n"
+		                                  "Press Q to quit\n\n"
+		                                  "Watch out for the spikes below!\n");
+		terminal_refresh();
 
-		if(keyboard_event_loop(screen, entities))
+		if(keyboard_event_loop(map, entities))
 			break;
 
 		bool fell = false;  // Need to break outer, so can't put the if in loop
 		for(const auto & curent : entities)
-			if(curent->position.y > screen.size.y - 2 && curent->is_player()) {
+			if(curent->position.y > map.size.y - 2 && curent->is_player()) {
 				fell = true;
 				break;
 			}
 		if(fell) {
-			curs_set(1);
-			frame_buffer() << "\nYou fell to your death. gaem over!\nPress 'r' to restart (10s): ";
-			refresh();
-			halfdelay(100);
-			if(tolower(getch()) == 'r') {
-				clear();
-				nodelay(stdscr, true);
-				loop(makescreen);
+			terminal_set("input.cursor-symbol = 0x4F;");
+			terminal_print(0, map.size.y + 2, "\n\n"
+			                                  "\nYou fell to your death. gaem over!\nPress 'r' "
+			                                  "to restart (10s): ");
+			terminal_refresh();
+			// halfdelay(100);
+			// TODO: implement halfdelay
+			terminal_delay(10000);
+			if(terminal_has_input() && terminal_read() == 'r') {
+				terminal_clear();
+				// nodelay(stdscr, true);
+				loop(makemap);
 			}
-			nodelay(stdscr, true);
+			// nodelay(stdscr, true);
 			break;
 		}
 	}
-	echo();
-	curs_set(1);
+	// echo();
+	terminal_set("input.cursor-symbol = 0x4F;");
 }
 
 void save_select() {
@@ -178,101 +177,82 @@ void save_select() {
 	files.erase(remove_if(begin(files), end(files), [&](const auto & file) { return file.find_first_of(".gaemsaev") == file.size() - 9; }), files.end());
 	transform(begin(files), end(files), begin(files), [&](const auto & file) { return file.substr(0, file.size() - 9); });
 
-	frame_buffer() << "Select the level you want to play";
+	terminal_print(0, 0, "Select the level you want to play");
 
 	auto itr = begin(files);
-	noecho();
-	curs_set(0);
-	while(true) {
-		bool ctn = true;
+	// noecho();
+	terminal_set("input.cursor-symbol = 0x20;");
+	for(bool ctn = true; ctn;) {
+		int y = 2;
 
-		move(2, 0);
-		frame_buffer() << '\t';
-		copy(begin(files), itr, ostream_iterator<string>(frame_buffer(), "\n\t"));
-		attron(A_REVERSE);
-		frame_buffer() << *itr << '\n';
-		attroff(A_REVERSE);
-		frame_buffer() << '\t';
-		copy(itr + 1, end(files), ostream_iterator<string>(frame_buffer(), "\n\t"));
-		refresh();
+		for_each(begin(files), itr, [&](const auto & saev) { terminal_printf(4, y++, "[bkcolor=black][color=white]%s", saev.c_str()); });
+		terminal_printf(4, y++, "[bkcolor=white][color=black]%s", itr->c_str());
+		for_each(itr + 1, end(files), [&](const auto & saev) { terminal_printf(4, y++, "[bkcolor=black][color=white]%s", saev.c_str()); });
+		terminal_refresh();
 
-		int ch = getch();
-		switch(ch) {
-			case 'w':
-			case 'W':
-			case KEY_UP:
+		switch(terminal_read()) {
+			case TK_W:
+			case TK_UP:
 				if(itr != begin(files))
 					--itr;
 				break;
 
-			case 's':
-			case 'S':
-			case KEY_DOWN:
+			case TK_S:
+			case TK_DOWN:
 				if(itr != --end(files))
 					++itr;
 				break;
 
-			case '\n':
-			case '\r':
-			case KEY_ENTER:
-#ifdef PADENTER
-			case PADENTER:
-#endif
+			case TK_ENTER:
+			case TK_KP_ENTER:
 				ctn = false;
 				break;
 		}
-
-		if(!ctn)
-			break;
 	}
-	curs_set(1);
-	echo();
+	terminal_set("input.cursor-symbol = 0x4F;");
+	// echo();
 
 	loop(bind(load_gaemsaev, "assets/saevs/" + *itr + ".gaemsaev"));
 }
 
 void show_credits() {
 	static const regex url_regex("[[:space:]]*https?://.*", regex_constants::optimize);
-	static const vector<pair<string, attr_t>> lines = []() {
-		vector<pair<string, attr_t>> temp;
+	static const vector<string> lines = []() {
+		vector<string> temp;
 		ifstream incredits("assets/credits");
 		for(string line; getline(incredits, line);)
-			temp.emplace_back(line, regex_match(line, url_regex) ? A_UNDERLINE : A_NORMAL);
+			temp.emplace_back((regex_match(line, url_regex) ? "[color=blue]" : +"") + line);
 		return temp;
 	}();
 
 
-	curs_set(0);
-	halfdelay(settings().credits.time_between_lines);
-	noecho();
+	terminal_set("input.cursor-symbol = 0x20;");
+	// halfdelay(settings().credits.time_between_lines);
+	// noecho();
 
-	const auto width  = getmaxx(stdscr);
-	const auto height = getmaxy(stdscr);
-	refresh();
+	const auto height = terminal_state(TK_HEIGHT);
+	terminal_refresh();
 
-	for(auto start = begin(lines); start != end(lines); ++start) {
-		const auto & str = *start;
-		const auto cury = getcury(stdscr);
-		attron(str.second);
-		mvaddstr(cury, (width - str.first.size()) / 2, str.first.c_str());
-		attroff(str.second);
-		refresh();
+	int y = 0;
+	for(auto itr = begin(lines); itr != end(lines); ++itr) {
+		const auto & str = *itr;
+		terminal_print(0, y, str.c_str());
+		terminal_refresh();
 
-		if(cury != height - 1)
-			move(cury + 1, 0);
-		else
-			scrl(1);
+		if(y < height)
+			++y;
+		else {
+			terminal_clear();
+			for(auto itr = begin(lines) + (y - height); itr != end(lines); ++itr)
+				terminal_print(0, y, str.c_str());
+			terminal_refresh();
+		}
 
-		getch();
+		// getch();
+		terminal_delay(settings().credits.time_between_lines);
 	}
 
-	echo();
-	nodelay(stdscr, true);
-
-	// Because neither nodelay, nor nocbreak work
-	while(getch() == ERR) {
-	}
-	curs_set(1);
+	terminal_read();
 }
 
 function<void()> main_menu() {
@@ -280,33 +260,49 @@ function<void()> main_menu() {
 	    {{"Play new Gaem", bind(loop, default_gaemsaev)}, {"Select saev", save_select}, {"Credits", show_credits}, {"Exit", [&]() {}}});
 
 	size_t idx = 1;
-	frame_buffer() << "Make your selection:\n\n";
-	for(const auto & item : items)
-		frame_buffer() << '\t' << idx++ << ". " << item.first << '\n';
-	refresh();
+	terminal_print(0, 0, "Make your selection:");
+	for(const auto & item : items) {
+		terminal_print(4, idx + 2, (to_string(idx) + ". " + item.first.data()).c_str());
+		++idx;
+	}
+	terminal_refresh();
 
-	curs_set(0);
-	noecho();
+	terminal_set("input.cursor-symbol = 0x20;");
+	// noecho();
 	while(true) {
-		int key = getch();
-		size_t idx;
-		stringstream(string(1, static_cast<char>(key))) >> idx;
+		int key = terminal_read();
+		size_t idx = key - TK_1;
 
-		if(isdigit(key) && idx > 0 && items.size() >= idx) {
-			echo();
-			curs_set(1);
-			clear_screen();
-			return items[idx - 1].second;
+		cerr << hex << key << '\n';
+		if(key >= TK_1 && key <= TK_9 && items.size() >= idx) {
+			// echo();
+			terminal_set("input.cursor-symbol = 0x4F;");
+			terminal_clear();
+			return items[idx].second;
 		}
 	}
 }
 
 int main() {
-	initscr();
-	scrollok(stdscr, true);
-	keypad(stdscr, true);
-	if(has_colors())
-		start_color();
-	main_menu()();
-	endwin();
+	cerr << "0\n";
+	if(!terminal_open()) {
+		cerr << "Couldn't initialize BearLibTerminal!\nSee \"bearlibterminal.log\" for details.\n";
+		return 1;
+	}
+	cerr << "1\n";
+	terminal_set("window.title='Gaem'; input.mouse-cursor = false; input.filter='keyboard';");
+	cerr << "2\n";
+
+	try {
+		cerr << "3\n";
+		main_menu()();
+	} catch(const exception & exc) {
+		cerr << "Exception captured: \"" << exc.what() << "\"\n";
+		return 2;
+	} catch(...) {
+		cerr << "Unknown exception captured.\n";
+		return 2;
+	}
+
+	terminal_close();
 }

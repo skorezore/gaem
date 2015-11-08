@@ -22,36 +22,28 @@
 
 
 #include "player.hpp"
-#include "curses.hpp"
 
 
 using namespace std;
 
 
-coords player::movement_destination(const gaem_screen & screen, int key) {
+coords player::movement_destination(const gaem_map & screen, int key) {
 	switch(key) {
-		case 'W':
-			return {position.x, position.y - 1};
-		case 'w':
-		case KEY_UP:
-			return {position.x, position.y - (2 * !screen.is_free(position.below()))};
+		case TK_W:
+		case TK_UP:
+				return {position.x, position.y - (terminal_check(TK_SHIFT) ? 1 : (2 * !screen.is_free(position.below())))};
 
-		case 'S':
-		case 's':
-		case KEY_DOWN:
+		case TK_S:
+		case TK_DOWN:
 			return {position.x, position.y + 1};
 
-		case 'A':
-			return {position.x - 1, position.y};
-		case 'a':
-		case KEY_LEFT:
-			return {position.x - 1 - screen.is_free(position.below()), position.y};
+		case TK_A:
+		case TK_LEFT:
+			return {position.x - 1 - (terminal_check(TK_SHIFT) ? 0 : screen.is_free(position.below())), position.y};
 
-		case 'D':
-			return {position.x + 1, position.y};
-		case 'd':
-		case KEY_RIGHT:
-			return {position.x + 1 + screen.is_free(position.below()), position.y};
+		case TK_D:
+		case TK_RIGHT:
+			return {position.x + 1 + (terminal_check(TK_SHIFT) ? 0 : screen.is_free(position.below())), position.y};
 	}
 	return position;
 }

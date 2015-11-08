@@ -24,8 +24,4 @@
 #pragma once
 
 
-#include "config.h"
-#include CURSES_LIB
-
-
-int nonblocking_getch() noexcept;
+int nonblocking_read() noexcept;

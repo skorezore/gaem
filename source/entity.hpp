@@ -24,10 +24,10 @@
 #pragma once
 
 
-#include <deque>
 #include "coords.hpp"
-#include "curses.hpp"
-#include "gaem_screen.hpp"
+#include "gaem_map.hpp"
+#include "BearLibTerminal.h"
+#include <deque>
 
 
 class entity {
@@ -36,10 +36,10 @@ public:
 	std::deque<coords> prev_positions;
 	int health = 100;
 	char body;
-	attr_t colour;
+	color_t colour;
 
 
-	entity(char thebody, attr_t attrs = A_NORMAL);
+	entity(char thebody, color_t attrs = 0xFFFFFFFF);
 	entity(const entity &) = default;
 	entity(entity &&) = default;
 
@@ -51,5 +51,5 @@ public:
 	void move_to(const coords & where);
 
 	virtual bool is_player() const;
-	virtual coords movement_destination(const gaem_screen & screen, int key) = 0;
+	virtual coords movement_destination(const gaem_map & screen, int key) = 0;
 };

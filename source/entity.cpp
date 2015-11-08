@@ -28,7 +28,7 @@
 using namespace std;
 
 
-entity::entity(char thechar, attr_t attrs) : body(thechar), colour(attrs) {}
+entity::entity(char thechar, color_t attrs) : body(thechar), colour(attrs) {}
 
 void entity::move_to(const coords & where) {
 	prev_positions.emplace_front(move(position));

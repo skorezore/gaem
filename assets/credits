@@ -8,12 +8,8 @@ nabijaczleweli
 
 Libraries used:
 
-Drawing in the console:
-    NCurses on GNU/Linux
-    https://www.gnu.org/software/ncurses
-
-    PDCurses on Windows
-    http://pdcurses.sourceforge.net
+UI - BearLibTerminal
+http://foo.wyrd.name/en:bearlibterminal
 
 Filesystem abstraction - tinydir
 http://github.com/cxong/tinydir

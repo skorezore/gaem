@@ -42,7 +42,7 @@ const gaem_settings & settings() {
 		gaem_settings tmp;
 
 		tmp.graphics.between_frames    = milliseconds(tree.get("graphics.time_between_frames", 75));
-		tmp.credits.time_between_lines = tree.get("credits.time_between_lines", 4);
+		tmp.credits.time_between_lines = tree.get("credits.time_between_lines", 400);
 
 		return tmp;
 	}();
@@ -52,7 +52,7 @@ const gaem_settings & settings() {
 		tree.put("graphics.time_between_frames", setts.graphics.between_frames.count());
 		tree.put("graphics.time_between_frames^", "In milliseconds"s);
 		tree.put("credits.time_between_lines", setts.credits.time_between_lines);
-		tree.put("credits.time_between_lines^", "[1-255] In tenths of a second"s);
+		tree.put("credits.time_between_lines^", "In milliseconds"s);
 
 		pt::write_info("assets/gaem.cfg", tree);
 	}};

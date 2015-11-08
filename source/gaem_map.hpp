@@ -22,24 +22,22 @@
 
 
 #pragma once
-#ifndef GAEM_SCREEN_HPP
-#define GAEM_SCREEN_HPP
 
 
 #include "coords.hpp"
-#include "curses.hpp"
+#include "BearLibTerminal.h"
 #include <string>
 #include <vector>
 
 
-class gaem_screen {
+class gaem_map {
 public:
-	static const chtype filler;
+	static const char filler;
 
 
 	const coords size;
 
-	gaem_screen(const coords & sz);
+	gaem_map(const coords & sz);
 
 	void draw();
 	void reset();
@@ -47,16 +45,13 @@ public:
 	bool is_valid(const coords & pos) const;
 	bool is_free(const coords & pos) const;
 
-	chtype operator[](const coords & xy);
-	void operator()(const coords & xy, chtype newval);
+	char operator[](const coords & xy);
+	void operator()(const coords & xy, char newval);
 
 private:
-	std::vector<std::vector<chtype>> map;
+	std::vector<std::string> map;
 };
 
 
-gaem_screen load_gaemsaev(const std::string & path);
-gaem_screen default_gaemsaev();
-
-
-#endif  // gaem_SCREEN_HPP
+gaem_map load_gaemsaev(const std::string & path);
+gaem_map default_gaemsaev();
