@@ -25,3 +25,4 @@
 
 
 int nonblocking_read() noexcept;
+int halfdelay_read(int time) noexcept;

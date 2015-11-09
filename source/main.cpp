@@ -75,7 +75,7 @@ namespace {
 bool keyboard_event_loop(gaem_map & map, vector<shared_ptr<entity>> & entities) {
 	const int key = nonblocking_read();
 
-	if(tolower(key) == 'q')  // Sneaking in that close key
+	if(tolower(key) == TK_Q)  // Sneaking in that close key
 		return true;
 
 	for(auto & curent : entities) {
@@ -121,8 +121,6 @@ void loop(const function<gaem_map()> & makemap) {
 		return !ent->is_player();
 	});
 
-	terminal_set("input.cursor-symbol = 0x20;");
-	// noecho();
 	while(true) {
 		if(frames++ & 1)
 			gravity(map, entities);
@@ -131,12 +129,11 @@ void loop(const function<gaem_map()> & makemap) {
 			for(auto & pos : curent->prev_positions)
 				map(pos, gaem_map::filler);
 			curent->prev_positions.clear();
-			map(curent->position, curent->body | curent->colour);
+			map(curent->position, curent->body);
 		}
 		map.draw();
 		terminal_print(0, map.size.y, string(map.size.x, '^').c_str());  // Photo-realistic spikes, I know.
-		terminal_print(0, map.size.y + 1, "\n\n"
-		                                  "Use WSAD/^v<> for movement\n"
+		terminal_print(0, map.size.y + 1, "Use WSAD/^v<> for movement\n"
 		                                  "Press Q to quit\n\n"
 		                                  "Watch out for the spikes below!\n");
 		terminal_refresh();
@@ -151,25 +148,17 @@ void loop(const function<gaem_map()> & makemap) {
 				break;
 			}
 		if(fell) {
-			terminal_set("input.cursor-symbol = 0x4F;");
-			terminal_print(0, map.size.y + 2, "\n\n"
-			                                  "\nYou fell to your death. gaem over!\nPress 'r' "
-			                                  "to restart (10s): ");
+			terminal_print(0, map.size.y + 1, "You fell to your death. gaem over!\n"
+			                                  "Press 'r' to restart (10s):");
+			terminal_clear_area(0, map.size.y + 4, 31, 1);  // 31 == strlen of bottommost line above
 			terminal_refresh();
-			// halfdelay(100);
-			// TODO: implement halfdelay
-			terminal_delay(10000);
-			if(terminal_has_input() && terminal_read() == 'r') {
+			if(halfdelay_read(10000) == TK_R) {
 				terminal_clear();
-				// nodelay(stdscr, true);
 				loop(makemap);
 			}
-			// nodelay(stdscr, true);
 			break;
 		}
 	}
-	// echo();
-	terminal_set("input.cursor-symbol = 0x4F;");
 }
 
 void save_select() {
@@ -180,8 +169,6 @@ void save_select() {
 	terminal_print(0, 0, "Select the level you want to play");
 
 	auto itr = begin(files);
-	// noecho();
-	terminal_set("input.cursor-symbol = 0x20;");
 	for(bool ctn = true; ctn;) {
 		int y = 2;
 
@@ -209,8 +196,6 @@ void save_select() {
 				break;
 		}
 	}
-	terminal_set("input.cursor-symbol = 0x4F;");
-	// echo();
 
 	loop(bind(load_gaemsaev, "assets/saevs/" + *itr + ".gaemsaev"));
 }
@@ -225,10 +210,6 @@ void show_credits() {
 		return temp;
 	}();
 
-
-	terminal_set("input.cursor-symbol = 0x20;");
-	// halfdelay(settings().credits.time_between_lines);
-	// noecho();
 
 	const auto height = terminal_state(TK_HEIGHT);
 	terminal_refresh();
@@ -248,11 +229,10 @@ void show_credits() {
 			terminal_refresh();
 		}
 
-		// getch();
-		terminal_delay(settings().credits.time_between_lines);
+		halfdelay_read(settings().credits.time_between_lines);
 	}
 
-	terminal_read();
+	halfdelay_read(settings().credits.time_between_lines);
 }
 
 function<void()> main_menu() {
@@ -262,21 +242,16 @@ function<void()> main_menu() {
 	size_t idx = 1;
 	terminal_print(0, 0, "Make your selection:");
 	for(const auto & item : items) {
-		terminal_print(4, idx + 2, (to_string(idx) + ". " + item.first.data()).c_str());
+		terminal_print(4, idx + 1, (to_string(idx) + ". " + item.first.data()).c_str());
 		++idx;
 	}
 	terminal_refresh();
 
-	terminal_set("input.cursor-symbol = 0x20;");
-	// noecho();
 	while(true) {
-		int key = terminal_read();
+		int key    = terminal_read();
 		size_t idx = key - TK_1;
 
-		cerr << hex << key << '\n';
 		if(key >= TK_1 && key <= TK_9 && items.size() >= idx) {
-			// echo();
-			terminal_set("input.cursor-symbol = 0x4F;");
 			terminal_clear();
 			return items[idx].second;
 		}
@@ -284,17 +259,13 @@ function<void()> main_menu() {
 }
 
 int main() {
-	cerr << "0\n";
 	if(!terminal_open()) {
 		cerr << "Couldn't initialize BearLibTerminal!\nSee \"bearlibterminal.log\" for details.\n";
 		return 1;
 	}
-	cerr << "1\n";
-	terminal_set("window.title='Gaem'; input.mouse-cursor = false; input.filter='keyboard';");
-	cerr << "2\n";
+	terminal_set("window.title='Gaem'; input: mouse-cursor = false, filter='keyboard';");
 
 	try {
-		cerr << "3\n";
 		main_menu()();
 	} catch(const exception & exc) {
 		cerr << "Exception captured: \"" << exc.what() << "\"\n";

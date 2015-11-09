@@ -27,3 +27,14 @@
 int nonblocking_read() noexcept {
 	return terminal_has_input() ? terminal_read() : 0;
 }
+
+int halfdelay_read(int time) noexcept {
+	int elapsed = 0;
+	while(!terminal_has_input() && elapsed++ < time)
+		terminal_delay(1);
+
+	if(terminal_has_input())
+		return terminal_read();
+	else
+		return 0;
+}
