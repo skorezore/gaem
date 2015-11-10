@@ -201,33 +201,22 @@ void save_select() {
 }
 
 void show_credits() {
-	static const regex url_regex("[[:space:]]*https?://.*", regex_constants::optimize);
-	static const vector<string> lines = []() {
-		vector<string> temp;
+	static const regex url_regex("([[:space:]]*)(https?://.*)", regex_constants::optimize | regex_constants::optimize);
+	static const string lines = []() {
+		string temp;
 		ifstream incredits("assets/credits");
-		for(string line; getline(incredits, line);)
-			temp.emplace_back((regex_match(line, url_regex) ? "[color=blue]" : +"") + line);
+		for(string line; getline(incredits, line);) {
+			temp += regex_replace(line, url_regex, "$1[color=blue]$2[color=white]");
+			temp += '\n';
+		}
 		return temp;
 	}();
 
 
-	const auto height = terminal_state(TK_HEIGHT);
-	terminal_refresh();
-
-	int y = 0;
-	for(auto itr = begin(lines); itr != end(lines); ++itr) {
-		const auto & str = *itr;
-		terminal_print(0, y, str.c_str());
+	for(size_t curline = 0; curline != string::npos; curline = lines.find('\n', curline + 1)) {
+		terminal_clear();
+		terminal_print(0, 0, lines.c_str() + curline + !!curline);
 		terminal_refresh();
-
-		if(y < height)
-			++y;
-		else {
-			terminal_clear();
-			for(auto itr = begin(lines) + (y - height); itr != end(lines); ++itr)
-				terminal_print(0, y, str.c_str());
-			terminal_refresh();
-		}
 
 		halfdelay_read(settings().credits.time_between_lines);
 	}
