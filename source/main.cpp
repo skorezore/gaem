@@ -246,7 +246,7 @@ function<void()> main_menu() {
 		}
 	}
 }
-
+#include "application.hpp"
 int main() {
 	if(!terminal_open()) {
 		cerr << "Couldn't initialize BearLibTerminal!\nSee \"bearlibterminal.log\" for details.\n";
@@ -255,7 +255,8 @@ int main() {
 	terminal_set("window.title='Gaem'; input: mouse-cursor = false, filter='keyboard';");
 
 	try {
-		main_menu()();
+		application app;
+		app.loop();
 	} catch(const exception & exc) {
 		cerr << "Exception captured: \"" << exc.what() << "\"\n";
 		return 2;
