@@ -24,24 +24,18 @@
 #pragma once
 
 
-#include <memory>
-#include "screen.hpp"
+#include "../screen.hpp"
+#include <regex>
 
 
-class application {
+class credits_screen : public screen {
 private:
-	std::unique_ptr<screen> current_screen;
-	std::unique_ptr<screen> scheduled_screen;
-	bool keep_going;
+	static const std::regex url_regex;
+	size_t curline;
 
 public:
-	template <class ScreenT, class... T>
-	void schedule_screen(T &&... args) {
-		scheduled_screen = std::make_unique<ScreenT>(*this, std::forward<T>(args)...);
-	}
+	credits_screen(application & theapp);
 
-	int loop();
-	void end();
-
-	application();
+	virtual int handle_event(int event) override;
+	virtual int halfdelay() const override;
 };

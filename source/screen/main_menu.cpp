@@ -23,6 +23,7 @@
 
 #include "main_menu.hpp"
 #include "../application.hpp"
+#include "credits.hpp"
 #include "BearLibTerminal.h"
 #include <experimental/string_view>
 #include <functional>
@@ -41,14 +42,10 @@ class save_select_screen : public screen {  // TODO: implement
 public:
 	save_select_screen(application & theapp) : screen(theapp) {}
 };
-class credits_screen : public screen {  // TODO: implement
-public:
-	credits_screen(application & theapp) : screen(theapp) {}
-};
 
 
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp), drawn(false) {}
-#include <iostream>
+
 int main_menu_screen::handle_event(int event) {
 	static const vector<pair<string_view, function<void()>>> items({{"Play new Gaem", [&]() { app.schedule_screen<play_screen>(); }},
 	                                                                {"Select saev", [&]() { app.schedule_screen<save_select_screen>(); }},
@@ -58,10 +55,7 @@ int main_menu_screen::handle_event(int event) {
 
 	if(const auto ret = screen::handle_event(event))
 		return ret;
-	cerr << "1\n";
 	if(!drawn) {
-		cerr << "2\n";
-
 		size_t idx = 1;
 		terminal_print(0, 0, "Make your selection:");
 		for(const auto & item : items) {

@@ -22,15 +22,20 @@
 
 
 #include "screen.hpp"
+#include "application.hpp"
 #include "BearLibTerminal.h"
 
 
+screen::screen(application & theapp) : app(theapp) {}
+screen::~screen() = default;
+
 int screen::handle_event(int event) {
-	return event == TK_CLOSE;
+	if(event == TK_CLOSE)
+		app.end();
+
+	return 0;
 }
 
-screen::screen(application & theapp) : app(theapp) {}
-screen::screen(const screen & other) = default;
-screen::screen(screen && other) = default;
-
-screen::~screen() = default;
+int screen::halfdelay() const {
+	return 0;
+}

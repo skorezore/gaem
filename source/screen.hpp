@@ -32,10 +32,10 @@ protected:
 	application & app;
 
 public:
+	screen(application & theapp);
+	virtual ~screen();
+
 	virtual int handle_event(int event);
 
-	screen(application & theapp);
-	screen(const screen & other);
-	screen(screen && other);
-	virtual ~screen();
+	virtual int halfdelay() const;
 };

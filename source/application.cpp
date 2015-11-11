@@ -23,37 +23,30 @@
 
 #include "application.hpp"
 #include "screen/main_menu.hpp"
+#include "termutil.hpp"
 #include "BearLibTerminal.h"
 
 
 using namespace std;
 
 
-application::application() : scheduled_screen(make_unique<main_menu_screen>(*this)), cont(true) {}
-#include <iostream>
+application::application() : scheduled_screen(make_unique<main_menu_screen>(*this)), keep_going(true) {}
+
 int application::loop() {
-cerr << "01\n";
 	int retval = 0;
-cerr << "02\n";
-	while(cont && !retval) {
-cerr << "03\n";
+	while(keep_going && !retval) {
 		if(scheduled_screen) {
-cerr << "04\n";
 			terminal_clear();
-cerr << "05\n";
 			current_screen = move(scheduled_screen);
-cerr << "06\n";
 			current_screen->handle_event(0);
-cerr << "07\n";
 		}
-cerr << "08\n";
-		retval = current_screen->handle_event(terminal_read());
-cerr << "09\n";
+
+		const auto halfdelay = current_screen->halfdelay();
+		retval = current_screen->handle_event(halfdelay ? halfdelay_read(halfdelay) : terminal_read());
 	}
-cerr << "091\n";
 	return retval;
 }
 
 void application::end() {
-	cont = false;
+	keep_going = false;
 }

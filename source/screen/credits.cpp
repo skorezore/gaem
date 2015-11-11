@@ -21,27 +21,47 @@
 // DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
+#include "credits.hpp"
+#include "../application.hpp"
+#include "../settings.hpp"
+#include "BearLibTerminal.h"
+#include <fstream>
+#include <string>
 
 
-#include <memory>
-#include "screen.hpp"
+using namespace std;
 
 
-class application {
-private:
-	std::unique_ptr<screen> current_screen;
-	std::unique_ptr<screen> scheduled_screen;
-	bool keep_going;
+const regex credits_screen::url_regex("([[:space:]]*)(https?://.*)", regex_constants::optimize);
 
-public:
-	template <class ScreenT, class... T>
-	void schedule_screen(T &&... args) {
-		scheduled_screen = std::make_unique<ScreenT>(*this, std::forward<T>(args)...);
-	}
 
-	int loop();
-	void end();
+credits_screen::credits_screen(application & theapp) : screen(theapp), curline(0) {}
 
-	application();
-};
+int credits_screen::handle_event(int event) {
+	static const string lines = []() {
+		string temp;
+		ifstream incredits("assets/credits");
+		for(string line; getline(incredits, line);) {
+			temp += regex_replace(line, url_regex, "$1[color=blue]$2[color=white]");
+			temp += '\n';
+		}
+		return temp;
+	}();
+
+
+	if(const auto ret = screen::handle_event(event))
+		return ret;
+
+	if(curline != string::npos) {
+		terminal_clear();
+		terminal_print(0, 0, lines.c_str() + curline + !!curline);
+		terminal_refresh();
+
+		curline = lines.find('\n', curline + 1);
+	} else
+		app.end();
+}
+
+int credits_screen::halfdelay() const {
+	return settings().credits.time_between_lines;
+}

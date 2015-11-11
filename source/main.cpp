@@ -200,52 +200,6 @@ void save_select() {
 	loop(bind(load_gaemsaev, "assets/saevs/" + *itr + ".gaemsaev"));
 }
 
-void show_credits() {
-	static const regex url_regex("([[:space:]]*)(https?://.*)", regex_constants::optimize | regex_constants::optimize);
-	static const string lines = []() {
-		string temp;
-		ifstream incredits("assets/credits");
-		for(string line; getline(incredits, line);) {
-			temp += regex_replace(line, url_regex, "$1[color=blue]$2[color=white]");
-			temp += '\n';
-		}
-		return temp;
-	}();
-
-
-	for(size_t curline = 0; curline != string::npos; curline = lines.find('\n', curline + 1)) {
-		terminal_clear();
-		terminal_print(0, 0, lines.c_str() + curline + !!curline);
-		terminal_refresh();
-
-		halfdelay_read(settings().credits.time_between_lines);
-	}
-
-	halfdelay_read(settings().credits.time_between_lines);
-}
-
-function<void()> main_menu() {
-	static const vector<pair<string_view, function<void()>>> items(
-	    {{"Play new Gaem", bind(loop, default_gaemsaev)}, {"Select saev", save_select}, {"Credits", show_credits}, {"Exit", [&]() {}}});
-
-	size_t idx = 1;
-	terminal_print(0, 0, "Make your selection:");
-	for(const auto & item : items) {
-		terminal_print(4, idx + 1, (to_string(idx) + ". " + item.first.data()).c_str());
-		++idx;
-	}
-	terminal_refresh();
-
-	while(true) {
-		int key    = terminal_read();
-		size_t idx = key - TK_1;
-
-		if(key >= TK_1 && key <= TK_9 && items.size() >= idx) {
-			terminal_clear();
-			return items[idx].second;
-		}
-	}
-}
 #include "application.hpp"
 int main() {
 	if(!terminal_open()) {
