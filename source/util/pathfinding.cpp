@@ -21,14 +21,31 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
+#include "pathfinding.hpp"
+#include <cassert>
+#include <cmath>
 
 
-#include <functional>
+using namespace std;
 
 
-struct quickscope_wrapper {
-	std::function<void()> func;
+/* Always returns a vector with at least 1 element (the starting position) */
+vector<coords> get_path(const coords & from, const coords & to) {
+	static const auto step = [](int v) -> int { return copysign(v / v, v); };
 
-	~quickscope_wrapper();
-};
+	if(from == to)
+		return {{from}};
+
+	const bool is_horizontal = from.y == to.y;
+	const bool is_vertical   = from.x == to.x;
+
+	assert(is_horizontal || is_vertical);
+
+	const coords delta = is_vertical ? coords{0, step(to.y - from.y)} : coords{step(to.x - from.x), 0};
+
+	vector<coords> path({from});
+	while(path.back() != to)
+		path.push_back(path.back() + delta);
+
+	return path;
+}

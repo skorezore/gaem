@@ -23,6 +23,9 @@
 
 #include "main_menu.hpp"
 #include "../application.hpp"
+#include "../gaem_map.hpp"
+#include "save_select.hpp"
+#include "play_gaem.hpp"
 #include "credits.hpp"
 #include "BearLibTerminal.h"
 #include <experimental/string_view>
@@ -34,20 +37,10 @@ using namespace std;
 using namespace std::experimental;
 
 
-class play_screen : public screen {  // TODO: implement
-public:
-	play_screen(application & theapp) : screen(theapp) {}
-};
-class save_select_screen : public screen {  // TODO: implement
-public:
-	save_select_screen(application & theapp) : screen(theapp) {}
-};
-
-
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp), drawn(false) {}
 
 int main_menu_screen::handle_event(int event) {
-	static const vector<pair<string_view, function<void()>>> items({{"Play new Gaem", [&]() { app.schedule_screen<play_screen>(); }},
+	static const vector<pair<string_view, function<void()>>> items({{"Play new Gaem", [&]() { app.schedule_screen<play_gaem_screen>(default_gaemsaev); }},
 	                                                                {"Select saev", [&]() { app.schedule_screen<save_select_screen>(); }},
 	                                                                {"Credits", [&]() { app.schedule_screen<credits_screen>(); }},
 	                                                                {"Exit", [&]() { app.end(); }}});

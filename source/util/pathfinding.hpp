@@ -24,11 +24,9 @@
 #pragma once
 
 
-#include <functional>
+#include "../coords.hpp"
+#include <vector>
 
 
-struct quickscope_wrapper {
-	std::function<void()> func;
-
-	~quickscope_wrapper();
-};
+/* Always returns a vector with at least 1 element (the starting position) */
+std::vector<coords> get_path(const coords & from, const coords & to);
