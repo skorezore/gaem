@@ -42,7 +42,12 @@ int application::loop() {
 		}
 
 		const auto halfdelay = current_screen->halfdelay();
-		retval = current_screen->handle_event(halfdelay ? halfdelay_read(halfdelay) : terminal_read());
+		if(halfdelay < 0)
+			retval = current_screen->handle_event(terminal_peek());
+		else if(halfdelay == 0)
+			retval = current_screen->handle_event(terminal_read());
+		else
+			retval = current_screen->handle_event(halfdelay_read(halfdelay));
 	}
 	return retval;
 }

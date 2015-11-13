@@ -30,7 +30,6 @@ def configure(conf):
 		                                            '-Wno-return-type', '-O3','-pipe'] + fpic, uselib_store='T')
 	for dep in bearlibterminaldeps:
 		conf.check(features='cxx cxxshlib', lib=dep, uselib_store='T')
-	conf.write_config_header('config.h')
 
 def build(buld):
 	buld(features='c cstlib', source=sources_freetype, target='freetype', use='F')

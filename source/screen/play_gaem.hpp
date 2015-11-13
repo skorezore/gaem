@@ -38,7 +38,6 @@ private:
 	gaem_map map;
 	// Look at that fancy hardcoded screen ^
 	std::function<gaem_map()> make_map;
-	unsigned int frames = 0;
 	std::vector<std::shared_ptr<entity>> entities;
 	bool have_help;
 	std::chrono::high_resolution_clock::time_point last_frame;
@@ -54,4 +53,5 @@ public:
 	}
 
 	virtual int handle_event(int event) override;
+	virtual int halfdelay() const override;
 };

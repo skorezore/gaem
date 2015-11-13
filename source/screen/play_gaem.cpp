@@ -29,6 +29,7 @@
 #include "../player.hpp"
 #include "BearLibTerminal.h"
 #include <algorithm>
+#include <iostream>
 
 
 using namespace std;
@@ -82,8 +83,10 @@ void play_gaem_screen::gravity() {
 }
 
 void play_gaem_screen::keyboard_event_loop(int key) {
-	if(key == TK_Q)  // Sneaking in that close key
+	if(key == TK_Q) {  // Sneaking in that close key
 		app.end();
+		return;
+	}
 
 	for(auto & curent : entities) {
 		coords destination = curent->movement_destination(map, key);
@@ -109,30 +112,43 @@ int play_gaem_screen::handle_event(int event) {
 	if(!have_help) {
 		terminal_print(0, map.size.y, string(map.size.x, '^').c_str());  // Photo-realistic spikes, I know.
 		terminal_print(0, map.size.y + 1, "Use WSAD/^v<> for movement\n"
-		                                  "Press Q to quit\n\n"
-		                                  "Watch out for the spikes below!\n");
+		                                  "Press Q to quit\n"
+		                                  "\n"
+		                                  "Watch out for the spikes below!");
 
+		terminal_refresh();
+
+		have_help  = true;
 		last_frame = high_resolution_clock::now();
-		have_help = true;
 	}
+
+	const bool newframe = (high_resolution_clock::now() - last_frame) >= settings().graphics.between_frames;
+	if(newframe)
+		gravity();
 
 	keyboard_event_loop(event);
 
-	if((high_resolution_clock::now() - last_frame) >= settings().graphics.between_frames)
-		gravity();
-	for(auto & curent : entities) {
-		for(auto & pos : curent->prev_positions)
-			map(pos, gaem_map::filler);  // TODO: don't use/redesign gaem_map
-		curent->prev_positions.clear();
-		map(curent->position, curent->body);
+	if(newframe) {
+		for(auto & curent : entities) {
+			for(auto & pos : curent->prev_positions)
+				map(pos, gaem_map::filler);  // TODO: don't use/redesign gaem_map
+			curent->prev_positions.clear();
+			map(curent->position, curent->body);
+		}
+		map.draw();
+
+		terminal_refresh();
+
+		last_frame = high_resolution_clock::now();
 	}
-	map.draw();
-	terminal_refresh();
 
 	for(const auto & curent : entities)
 		if(curent->position.y > map.size.y - 2 && curent->is_player())
 			app.schedule_screen<restart_screen>(make_map);
 
-
 	return 0;
+}
+
+int play_gaem_screen::halfdelay() const {
+	return 1;
 }
