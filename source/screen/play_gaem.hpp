@@ -28,6 +28,7 @@
 #include "../screen.hpp"
 #include "../entity.hpp"
 #include <functional>
+#include <chrono>
 #include <memory>
 #include <vector>
 
@@ -40,6 +41,7 @@ private:
 	unsigned int frames = 0;
 	std::vector<std::shared_ptr<entity>> entities;
 	bool have_help;
+	std::chrono::high_resolution_clock::time_point last_frame;
 
 	void setup();
 	void gravity();

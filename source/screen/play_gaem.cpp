@@ -24,6 +24,7 @@
 #include "play_gaem.hpp"
 #include "../util/pathfinding.hpp"
 #include "../application.hpp"
+#include "../settings.hpp"
 #include "../termutil.hpp"
 #include "../player.hpp"
 #include "BearLibTerminal.h"
@@ -31,6 +32,7 @@
 
 
 using namespace std;
+using namespace std::chrono;
 
 
 class restart_screen : public screen {
@@ -109,15 +111,18 @@ int play_gaem_screen::handle_event(int event) {
 		terminal_print(0, map.size.y + 1, "Use WSAD/^v<> for movement\n"
 		                                  "Press Q to quit\n\n"
 		                                  "Watch out for the spikes below!\n");
+
+		last_frame = high_resolution_clock::now();
 		have_help = true;
 	}
 
-	if(frames++ & 1)
+	keyboard_event_loop(event);
+
+	if((high_resolution_clock::now() - last_frame) >= settings().graphics.between_frames)
 		gravity();
-	// this_thread::sleep_for(settings().graphics.between_frames);
 	for(auto & curent : entities) {
 		for(auto & pos : curent->prev_positions)
-			map(pos, gaem_map::filler);  // TODO: don't use gaem_map
+			map(pos, gaem_map::filler);  // TODO: don't use/redesign gaem_map
 		curent->prev_positions.clear();
 		map(curent->position, curent->body);
 	}
