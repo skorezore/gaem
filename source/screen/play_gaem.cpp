@@ -29,13 +29,13 @@
 #include "../player.hpp"
 #include "BearLibTerminal.h"
 #include <algorithm>
-#include <iostream>
 
 
 using namespace std;
 using namespace std::chrono;
 
 
+// TODO: make it display the text in a frame on an uncleared screen?
 class restart_screen : public screen {
 private:
 	function<gaem_map()> make_map;

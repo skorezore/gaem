@@ -22,7 +22,6 @@
 
 
 #include "application.hpp"
-#include "screen/main_menu.hpp"
 #include "termutil.hpp"
 #include "BearLibTerminal.h"
 
@@ -30,9 +29,12 @@
 using namespace std;
 
 
-application::application() : scheduled_screen(make_unique<main_menu_screen>(*this)), keep_going(true) {}
+application::application() : keep_going(true) {}
 
 int application::loop() {
+	if(!current_screen && !scheduled_screen)
+		throw logic_error("No screen to display");
+
 	int retval = 0;
 	while(keep_going && !retval) {
 		if(scheduled_screen) {

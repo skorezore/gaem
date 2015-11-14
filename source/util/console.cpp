@@ -21,31 +21,33 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-#include "pathfinding.hpp"
-#include <cassert>
-#include <cmath>
+#ifndef _WIN32
+#include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 
-using namespace std;
+extern "C" int getch(void) {
+	termios oldt;
 
+	tcgetattr(STDIN_FILENO, &oldt);
+	auto newt = oldt;
+	newt.c_lflag &= ~(ICANON | ECHO);
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+	auto oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+	fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-/* Always returns a vector with at least 1 element (the starting position) */
-vector<coords> get_path(const coords & from, const coords & to) {
-	static const auto step = [](int v) -> int { return copysign(v / v, v); };
+	auto ch = getchar();
 
-	if(from == to)
-		return {{from}};
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+	fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-	const bool is_horizontal = from.y == to.y;
-	const bool is_vertical   = from.x == to.x;
+	if(ch != EOF) {
+		ungetc(ch, stdin);
+		return 1;
+	}
 
-	assert(is_horizontal || is_vertical);
-
-	const coords delta = is_vertical ? coords{0, step(to.y - from.y)} : coords{step(to.x - from.x), 0};
-
-	vector<coords> path({from});
-	while(path.back() != to)
-		path.push_back(path.back() + delta);
-
-	return path;
+	return 0;
 }
+#endif

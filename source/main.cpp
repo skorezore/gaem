@@ -22,12 +22,16 @@
 
 
 #include "application.hpp"
+#include "screen/main_menu.hpp"
 #include <BearLibTerminal.h>
 #include <stdexcept>
 #include <iostream>
 
 
 using namespace std;
+
+
+extern "C" int getch(void);
 
 
 int main() {
@@ -37,16 +41,28 @@ int main() {
 	}
 	terminal_set("window.title='Gaem'; input: mouse-cursor = false, filter='keyboard';");
 
+	int retval = 0;
 	try {
 		application app;
+		app.schedule_screen<main_menu_screen>();
 		app.loop();
 	} catch(const exception & exc) {
 		cerr << "Exception captured: \"" << exc.what() << "\"\n";
-		return 2;
+		retval = 2;
 	} catch(...) {
 		cerr << "Unknown exception captured.\n";
-		return 2;
+		retval = 2;
 	}
 
 	terminal_close();
+
+	if(retval) {
+		cerr << "Please report that to the developers on the issue tracker at github.com/skorezore/gaem,\n"
+		        "or fire them an e-mail at nabijaczleweli@gmail.com and/or skorezore@gmail.com\n"
+		        "\n"
+		        "Press any key to continue...";
+		getch();
+	}
+
+	return retval;
 }
