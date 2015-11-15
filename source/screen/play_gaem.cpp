@@ -57,6 +57,10 @@ public:
 
 		return 0;
 	}
+
+	virtual bool requires_clear() const override {
+		return false;
+	}
 };
 
 class centralizer : public entity {

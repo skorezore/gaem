@@ -38,4 +38,5 @@ public:
 	virtual int handle_event(int event);
 
 	virtual int halfdelay() const;
+	virtual bool requires_clear() const;
 };

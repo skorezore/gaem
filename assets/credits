@@ -12,17 +12,17 @@ UI - BearLibTerminal
 http://foo.wyrd.name/en:bearlibterminal
 
 Filesystem abstraction - tinydir
-http://github.com/cxong/tinydir
+https://github.com/cxong/tinydir
 
-Config - Cpponfiguration
-http://github.com/nabijaczleweli/Cpponfiguration
+Config - Boost.PropertyTree
+https://github.com/boostorg/property_tree
 
 
 Special mentions:
 
 For unending support (or lack thereof):
     Lounge<C++>
-    http://chat.stackoverflow.com/rooms/10
+    https://chat.stackoverflow.com/rooms/10
 
 For code review, that made it not suck donkey ass:
     sehe (@sehetw)

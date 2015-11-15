@@ -42,7 +42,7 @@ int credits_screen::handle_event(int event) {
 		string temp;
 		ifstream incredits("assets/credits");
 		for(string line; getline(incredits, line);) {
-			temp += regex_replace(line, url_regex, "$1[color=blue]$2[color=white]");
+			temp += regex_replace(line, url_regex, "$1[color=#5050EE]$2[/color]");
 			temp += '\n';
 		}
 		return temp;

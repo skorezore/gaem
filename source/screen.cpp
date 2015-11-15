@@ -39,3 +39,7 @@ int screen::handle_event(int event) {
 int screen::halfdelay() const {
 	return 0;
 }
+
+bool screen::requires_clear() const {
+	return true;
+}

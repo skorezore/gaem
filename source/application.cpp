@@ -38,8 +38,9 @@ int application::loop() {
 	int retval = 0;
 	while(keep_going && !retval) {
 		if(scheduled_screen) {
-			terminal_clear();
 			current_screen = move(scheduled_screen);
+			if(current_screen->requires_clear())
+				terminal_clear();
 			current_screen->handle_event(0);
 		}
 
