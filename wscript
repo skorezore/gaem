@@ -27,7 +27,7 @@ def configure(conf):
 	conf.env.append_value('INCLUDES',
 		                    ['.', '../external/property_tree', '../external/tinydir', '../external/BearLibTerminal/Terminal/Include/C'] +
 		                    list(map(lambda x: '../external/BearLibTerminal/Terminal/Dependencies/' + x + '/Include', ['FreeType', 'NanoJPEG', 'PicoPNG'])))
-	conf.env.append_value('LDFLAGS', '-rpath.')
+	conf.env.append_value('LDFLAGS', '-Wl,-rpath,.')
 	conf.check(features='c cstlib', cflags=['-std=c11', '-O3', '-pipe'] + defines_freetype + fpic, uselib_store='F')
 	conf.check(features='cxx cxxprogram cxxstlib', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'] + fpic, uselib_store='M')
 	for dep in bearlibterminaldeps:
