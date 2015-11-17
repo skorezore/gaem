@@ -61,8 +61,8 @@ int main_menu_screen::handle_event(int event) {
 
 	size_t idx = event - TK_1;
 
-	if(event >= TK_1 && event <= TK_9 && items.size() >= idx) {
+	if(event >= TK_1 && event <= TK_9 && items.size() >= idx)
 		(items[idx].second)();
-		return 0;
-	}
+
+	return 0;
 }

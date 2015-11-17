@@ -60,6 +60,8 @@ int credits_screen::handle_event(int event) {
 		curline = lines.find('\n', curline + 1);
 	} else
 		app.end();
+
+	return 0;
 }
 
 int credits_screen::halfdelay() const {
