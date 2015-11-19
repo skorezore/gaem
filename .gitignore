@@ -5,6 +5,8 @@
 !assets
 !assets/*
 !assets/*/*
+!external
+!external/*
 !.clang-format
 !.dropbox_uploader.enc
 !.gitignore

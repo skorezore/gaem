@@ -3,4 +3,5 @@
 	url = https://github.com/cxong/tinydir.git
 [submodule "external/BearLibTerminal"]
 	path = external/BearLibTerminal
-	url = https://github.com/tommyettinger/BearLibTerminal.git
+	url = https://github.com/nabijaczleweli/BearLibTerminal.git
+	branch = not-forced-shared
