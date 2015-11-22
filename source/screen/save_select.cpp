@@ -56,7 +56,7 @@ int save_select_screen::handle_event(int event) {
 	for_each(current + 1, end(saves), [&](const auto & saev) { terminal_printf(4, y++, "[bkcolor=black][color=white]%s", saev.c_str()); });
 	terminal_refresh();
 
-	switch(terminal_read()) {
+	switch(event) {
 		case TK_W:
 		case TK_UP:
 			if(current != begin(saves))
