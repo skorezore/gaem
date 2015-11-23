@@ -35,7 +35,6 @@ using namespace std;
 using namespace std::chrono;
 
 
-// TODO: make it display the text in a frame on an uncleared screen?
 class restart_screen : public screen {
 private:
 	function<gaem_map()> make_map;
@@ -45,8 +44,25 @@ public:
 	restart_screen(application & theapp, F && func) : screen(theapp), make_map(std::forward<F>(func)) {}
 
 	virtual int handle_event(int event) override {
-		terminal_print(0, 0, "You fell to your death. gaem over!\n"
-		                     "Press 'r' to restart (10s):");
+		const auto twidth  = terminal_state(TK_WIDTH);
+		const auto theight = terminal_state(TK_HEIGHT);
+		const auto offsetx = twidth / 2 - 34 / 2;
+		const auto offsety = theight / 2 - 2 / 2;
+
+		terminal_clear_area(offsetx, offsety, 34, 2);
+		terminal_composition(TK_ON);
+		terminal_put(offsetx + 0, offsety + 0, 0xE000);
+		terminal_put(offsetx + 34, offsety + 0, 0xE001);
+		terminal_put(offsetx + 0, offsety + 1, 0xE002);
+		terminal_put(offsetx + 34, offsety + 1, 0xE003);
+		for(int i = 1; i < 34; ++i) {
+			terminal_put(offsetx + i, offsety + 0, 0xE007);
+			terminal_put(offsetx + i, offsety + 1, 0xE008);
+		}
+		// TODO: The left of 'Y' amd 'P' collide with the borders
+		terminal_print(offsetx, offsety, "You fell to your death. gaem over!\n"
+		                                 "Press 'r' to restart (10s):");
+		terminal_composition(TK_OFF);
 		terminal_refresh();
 		if(event) {
 			if(halfdelay_read(10000) == TK_R)

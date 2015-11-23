@@ -36,10 +36,13 @@ extern "C" int getch(void);
 
 int main() {
 	if(!terminal_open()) {
-		cerr << "Couldn't initialize BearLibTerminal!\nSee \"bearlibterminal.log\" for details.\n";
+		cerr << "Couldn't initialize BearLibTerminal!\n"
+		        "See \"bearlibterminal.log\" for details.\n";
 		return 1;
 	}
-	terminal_set("window.title='Gaem'; input: mouse-cursor = false, filter='keyboard';");
+	terminal_set("window.title='Gaem'; input: mouse-cursor = false, filter='keyboard';"
+	             "0xE000: 'assets/fonts/corners.bmp', size=8x16;"
+	             "0xE005: 'assets/fonts/borders.bmp', size=8x16;");
 
 	int retval = 0;
 	try {
