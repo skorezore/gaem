@@ -27,18 +27,17 @@ def configure(conf):
 	conf.env.append_value('INCLUDES',
 		                    ['.', '../external/property_tree', '../external/tinydir', '../external/BearLibTerminal/Terminal/Include/C'] +
 		                    list(map(lambda x: '../external/BearLibTerminal/Terminal/Dependencies/' + x + '/Include', ['FreeType', 'NanoJPEG', 'PicoPNG'])))
-	conf.env.append_value('LDFLAGS', '-Wl,-rpath,.')
 	conf.check(features='c cstlib', cflags=['-std=c11', '-O3', '-pipe'] + defines_freetype + fpic, uselib_store='F')
-	conf.check(features='cxx cxxprogram cxxstlib', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe'] + fpic, uselib_store='M')
+	conf.check(features='cxx cxxprogram cxxstlib', cxxflags=['-std=c++14', '-Wall', '-Wextra', '-O3', '-pedantic', '-pipe', '-DBEARLIBTERMINAL_STATIC_BUILD'] + fpic,
+		         uselib_store='M')
 	for dep in bearlibterminaldeps:
-		conf.check(features='cxx cxxshlib', lib=dep, uselib_store='M')
+		conf.check(features='cxx cxxprogram', lib=dep, uselib_store='M')
 
 def build(buld):
-	buld(features='c cstlib', source=sources_freetype, target='freetype', use='F')
-	buld(features='cxx cxxstlib', source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Dependencies/PicoPNG/Source/**/*.cpp'), target='picopng', use='M')
-	buld(features='cxx cxxshlib', source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Source/**/*.cpp'), target='bearlibterminal',
-		   use=['M', 'freetype', 'picopng'])
-	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'bearlibterminal'])
+	buld(features='c cstlib',       source=sources_freetype, target='freetype', use='F')
+	buld(features='cxx cxxstlib',   source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Dependencies/PicoPNG/Source/**/*.cpp'), target='picopng', use='M')
+	buld(features='cxx cxxstlib',   source=buld.path.ant_glob('external/BearLibTerminal/Terminal/Source/**/*.cpp'), target='bearlibterminal', use=['M'])
+	buld(features='cxx cxxprogram', source=buld.path.ant_glob('source/**/*.cpp'), target='gaem', use=['M', 'bearlibterminal', 'freetype', 'picopng'])
 	buld(rule=copyassets, always=True)
 
 def copyassets(self):
