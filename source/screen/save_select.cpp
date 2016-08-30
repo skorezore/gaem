@@ -40,20 +40,20 @@ int save_select_screen::handle_event(int event) {
 
 	if(saves.empty()) {
 		saves = list_files("assets/saevs");
-		saves.erase(remove_if(begin(saves), end(saves), [&](const auto & file) { return file.find_first_of(".gaemsaev") == file.size() - 9; }), saves.end());
-		transform(begin(saves), end(saves), begin(saves), [&](const auto & file) { return file.substr(0, file.size() - 9); });
+		saves.erase(remove_if(begin(saves), end(saves), [](const auto & file) { return file.find_first_of(".gaemsaev") == file.size() - 9; }), saves.end());
+		transform(begin(saves), end(saves), begin(saves), [](const auto & file) { return file.substr(0, file.size() - 9); });
 
 		current = saves.begin();
 
 		terminal_print(0, 0, "Select the level you want to play");
 	}
 
-
-	int y = 2;
-
-	for_each(begin(saves), current, [&](const auto & saev) { terminal_printf(4, y++, "[bkcolor=black][color=white]%s", saev.c_str()); });
-	terminal_printf(4, y++, "[bkcolor=white][color=black]%s", current->c_str());
-	for_each(current + 1, end(saves), [&](const auto & saev) { terminal_printf(4, y++, "[bkcolor=black][color=white]%s", saev.c_str()); });
+	auto printer = [y = 2](const auto & saev) mutable {
+		terminal_printf(4, y++, "[bkcolor=black][color=white]%s", saev.c_str());
+	};
+	for_each(begin(saves), current, printer);
+	printer(*current);
+	for_each(current + 1, end(saves), printer);
 	terminal_refresh();
 
 	switch(event) {

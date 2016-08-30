@@ -4,4 +4,3 @@
 [submodule "external/BearLibTerminal"]
 	path = external/BearLibTerminal
 	url = https://github.com/nabijaczleweli/BearLibTerminal.git
-	branch = not-forced-shared

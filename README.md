@@ -10,9 +10,11 @@ Recommended are [ncurses](http://bfy.tw/xfD) on Linux-based OSes and [PDcurses](
 ## Building
 Gaem uses the glorious [`waf`](https://github.com/waf-project/waf) build system.<br />
 To build Gaem, all one needs to do is:
-> `git submodule update --init`<br />
-> `waf configure`<br />
-> `waf`
+```shell
+git submodule update --init --recursive
+waf configure
+waf`
+```
 
 ## FAQ
 Q: its not werk on MSVC/VS youu suck i hoep you dyeeee!  
